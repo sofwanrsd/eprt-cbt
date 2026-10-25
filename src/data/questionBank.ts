@@ -6,7 +6,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 1,
-    "audioUrl": "/audio/Listening_task 2_ 1 - 5-WiFaZD8bS.mp3",
     "speakerText": [
       "Man: Did you manage to submit the research paper before five?",
       "Woman: Barely. The professor's assistant was just locking the office door."
@@ -27,7 +26,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 2,
-    "audioUrl": "/audio/Listening_task 3_1-4nnpYZ3ep.mp3",
     "speakerText": [
       "Woman: I'm thinking of dropping that advanced economics course. It's way over my head.",
       "Man: Don't give up yet! Why not form a study group with Sarah and David?"
@@ -48,7 +46,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 3,
-    "audioUrl": "/audio/Listening_task 3_2-BMuEaoz08.mp3",
     "speakerText": [
       "Man: Mark didn't seem enthusiastic about joining the robotics club.",
       "Woman: Could you blame him? He's taking twenty credit hours this semester."
@@ -69,7 +66,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 4,
-    "audioUrl": "/audio/Listening_task 3_3-M0Thd9_uD.mp3",
     "speakerText": [
       "Woman: Have you heard if the campus library will be open during the holiday break?",
       "Man: Only on weekdays, and even then, just for half the usual hours."
@@ -90,7 +86,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 5,
-    "audioUrl": "/audio/Listening_task 3_4-_LGXnAqpz.mp3",
     "speakerText": [
       "Man: I was hoping to get a single room in the dormitories this fall.",
       "Woman: So was everyone else! You should consider looking for an off-campus apartment."
@@ -111,7 +106,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 6,
-    "audioUrl": "/audio/Listening_task 3_5-S6r2e1ewH.mp3",
     "speakerText": [
       "Woman: Is Professor Harrison always this strict about assignment formats?",
       "Man: You bet! If margins are off by a millimeter, he won't even grade it."
@@ -132,7 +126,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 7,
-    "audioUrl": "/audio/audio-5f82c34106275.mp3",
     "speakerText": [
       "Man: Can you lend me a hand with this statistical regression script?",
       "Woman: As soon as I finish compiling these chemistry lab results, I'd be glad to."
@@ -153,7 +146,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 8,
-    "audioUrl": "/audio/audio-5f8bfce533d34.mp3",
     "speakerText": [
       "Woman: The concert tickets sold out in under three minutes!",
       "Man: I told you we should have queued up online half an hour early."
@@ -174,7 +166,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 9,
-    "audioUrl": "/audio/audio-5f8bff6e7f67c.mp3",
     "speakerText": [
       "Man: Are you going to the campus career fair on Thursday?",
       "Woman: Wouldn't miss it for the world! Several top tech recruiters will be there."
@@ -195,7 +186,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 10,
-    "audioUrl": "/audio/audio-5f914ead8abcb.mp3",
     "speakerText": [
       "Woman: Do you think our proposal will receive funding from the faculty grant?",
       "Man: Well, it's a toss-up between our project and the solar vehicle team."
@@ -216,7 +206,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 11,
-    "audioUrl": "/audio/files-5f7d8a5391bec.mp3",
     "speakerText": [
       "Man: The air conditioner in the auditorium is making a terrible screeching noise.",
       "Woman: Has anyone called facility maintenance yet?"
@@ -237,7 +226,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 12,
-    "audioUrl": "/audio/files-5f8aee65c0847.mp3",
     "speakerText": [
       "Woman: I can't believe how steep the textbook prices are this term.",
       "Man: Tell me about it! My organic chemistry manual alone cost a fortune."
@@ -258,7 +246,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 13,
-    "audioUrl": "/audio/files-5f8aee80c98c8.mp3",
     "speakerText": [
       "Man: We need to leave for the airport in ten minutes if we want to catch the flight.",
       "Woman: Hold on, I can't find my boarding pass anywhere!"
@@ -279,7 +266,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 14,
-    "audioUrl": "/audio/files-5f8aee95016cf.mp3",
     "speakerText": [
       "Woman: How was your presentation on renewable microgrids?",
       "Man: It went off without a hitch! The panel even praised our load-balancing algorithm."
@@ -300,7 +286,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 15,
-    "audioUrl": "/audio/files-5f8aeeafa2861.mp3",
     "speakerText": [
       "Man: Did you manage to contact Professor Adams about the makeup test?",
       "Woman: His line was busy every time I dialed, but I finally sent him an email."
@@ -321,7 +306,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 16,
-    "audioUrl": "/audio/files-5f8af0aa77e61.mp3",
     "speakerText": [
       "Woman: I'm completely exhausted after that three-hour algorithms exam.",
       "Man: Join the club! Everyone in my row looked half-asleep by the end."
@@ -342,7 +326,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 17,
-    "audioUrl": "/audio/files-5f8af16016755.mp3",
     "speakerText": [
       "Man: Should we order takeout or cook dinner at the dormitory kitchen?",
       "Woman: Let's flip a coin; either option sounds good to me."
@@ -363,7 +346,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 18,
-    "audioUrl": "/audio/files-5f8bdc7be383d.mp3",
     "speakerText": [
       "Woman: Brian said he would repair my bicycle brakes this afternoon.",
       "Man: Take whatever he says with a grain of salt. He always makes promises he can't keep."
@@ -384,7 +366,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 19,
-    "audioUrl": "/audio/files-5f8bdd2e8919c.mp3",
     "speakerText": [
       "Man: The deadline for the scholarship application is tomorrow at noon.",
       "Woman: Don't remind me! I still have to write the personal statement from scratch."
@@ -405,7 +386,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 20,
-    "audioUrl": "/audio/files-5f8be07bdb091.mp3",
     "speakerText": [
       "Woman: Did the city council approve the expansion of the light rail line?",
       "Man: They put it on the back burner until the next fiscal quarter."
@@ -426,7 +406,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 21,
-    "audioUrl": "/audio/files-5f8be0ad22989.mp3",
     "speakerText": [
       "Man: I was surprised to see Lisa at the coding marathon last night.",
       "Woman: What did you expect? When there is a grand prize on the line, she never sits on the sidelines."
@@ -447,7 +426,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 22,
-    "audioUrl": "/audio/files-5f8be0f7f0c98.mp3",
     "speakerText": [
       "Woman: Would you mind if I borrowed your calculus notes over the weekend?",
       "Man: Not in the least! Just make sure I get them back by Monday morning."
@@ -468,7 +446,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 23,
-    "audioUrl": "/audio/files-5f8be11a9fc3d.mp3",
     "speakerText": [
       "Man: Did you hear that Professor Lin published another paper in Nature?",
       "Woman: It's second nature to her at this point; she has over forty peer-reviewed publications."
@@ -489,7 +466,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 24,
-    "audioUrl": "/audio/files-5f8be213c2496.mp3",
     "speakerText": [
       "Woman: I feel like we've been going in circles trying to fix this database deadlock.",
       "Man: Why don't we step away for a cup of coffee and look at the schema with fresh eyes?"
@@ -510,7 +486,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 25,
-    "audioUrl": "/audio/files-5f8c0bc1339b3.mp3",
     "speakerText": [
       "Man: The campus bookstore is giving away free planners today.",
       "Woman: Really? I'd better head over there before they run out."
@@ -531,7 +506,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 26,
-    "audioUrl": "/audio/files-5f8c0c7e26367.mp3",
     "speakerText": [
       "Woman: Could we postpone our group meeting until six o'clock?",
       "Man: That suits me to a T; I have a dental appointment at four anyway."
@@ -552,7 +526,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 27,
-    "audioUrl": "/audio/files-5f8c0d44bc2b0.mp3",
     "speakerText": [
       "Man: Have you decided which faculty advisor to choose for your capstone project?",
       "Woman: I'm still on the fence; both Dr. Evans and Dr. Zhao have fascinating lab openings."
@@ -573,7 +546,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 28,
-    "audioUrl": "/audio/files-5f8d3442763de.mp3",
     "speakerText": [
       "Woman: I heard the physics department is getting a new electron microscope.",
       "Man: It's about time! The current model has been breaking down every other week."
@@ -594,7 +566,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 29,
-    "audioUrl": "/audio/files-5f8d35ed33625.mp3",
     "speakerText": [
       "Man: Is the campus shuttle still running to the downtown tech hub?",
       "Woman: Only until eight o'clock on Fridays; after that, you'll have to take the public transit bus."
@@ -615,7 +586,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part A",
     "questionNumber": 30,
-    "audioUrl": "/audio/files-5f8d360859516.mp3",
     "speakerText": [
       "Woman: Do you think our debate team has a shot at winning the regional finals?",
       "Man: With the amount of preparation we've put in, I'd say the odds are definitely in our favor."
@@ -636,7 +606,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 31,
-    "audioUrl": "/audio/files-5f8d36216627b.mp3",
     "speakerText": [
       "Narrator: Questions 31 through 34 are based on a conversation about university internship opportunities.",
       "Advisor: Good morning Kevin. What brings you to the career development office today?",
@@ -660,7 +629,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 32,
-    "audioUrl": "/audio/files-5f8d36389cbc4.mp3",
     "speakerText": [
       "Narrator: Questions 31 through 34 are based on a conversation about university internship opportunities.",
       "Advisor: Good morning Kevin. What brings you to the career development office today?",
@@ -684,7 +652,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 33,
-    "audioUrl": "/audio/files-5f8d3655e39a4.mp3",
     "speakerText": [
       "Narrator: Questions 31 through 34 are based on a conversation about university internship opportunities.",
       "Advisor: Good morning Kevin. What brings you to the career development office today?",
@@ -708,7 +675,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 34,
-    "audioUrl": "/audio/files-5f91039e2bea6.mp3",
     "speakerText": [
       "Narrator: Questions 31 through 34 are based on a conversation about university internship opportunities.",
       "Advisor: Good morning Kevin. What brings you to the career development office today?",
@@ -732,7 +698,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 35,
-    "audioUrl": "/audio/files-5f9103b5ed7d1.mp3",
     "speakerText": [
       "Narrator: Questions 35 through 38 are based on a conversation regarding a campus greenhouse project.",
       "Student A: Look at these heirloom tomato seedlings, Emily! The automated drip irrigation system is functioning flawlessly.",
@@ -756,7 +721,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 36,
-    "audioUrl": "/audio/files-5f9103fc401b0.mp3",
     "speakerText": [
       "Narrator: Questions 35 through 38 are based on a conversation regarding a campus greenhouse project.",
       "Student A: Look at these heirloom tomato seedlings, Emily! The automated drip irrigation system is functioning flawlessly.",
@@ -780,7 +744,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 37,
-    "audioUrl": "/audio/files-64509a9e692ac.mp3",
     "speakerText": [
       "Narrator: Questions 35 through 38 are based on a conversation regarding a campus greenhouse project.",
       "Student A: Look at these heirloom tomato seedlings, Emily! The automated drip irrigation system is functioning flawlessly.",
@@ -804,7 +767,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part B",
     "questionNumber": 38,
-    "audioUrl": "/audio/files-6451da3cb7674.mp3",
     "speakerText": [
       "Narrator: Questions 35 through 38 are based on a conversation regarding a campus greenhouse project.",
       "Student A: Look at these heirloom tomato seedlings, Emily! The automated drip irrigation system is functioning flawlessly.",
@@ -828,7 +790,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 39,
-    "audioUrl": "/audio/files-6451da4ce356c.mp3",
     "speakerText": [
       "Narrator: Questions 39 through 42 are based on an astronomy lecture about stellar evolution.",
       "Professor: Today we examine white dwarfs, the final evolutionary stage for stars whose initial mass is less than eight solar masses. When stars like our Sun exhaust hydrogen fuel in their cores, they expand into red giants and subsequently shed their outer envelopes, leaving behind an Earth-sized remnant composed primarily of electron-degenerate matter. In this state, normal thermal pressure no longer supports the star against gravitational collapse; instead, electron degeneracy pressure\u2014governed by the Pauli exclusion principle\u2014halts contraction. However, if accretion pushes the remnant beyond the Chandrasekhar limit of 1.4 solar masses, a catastrophic thermonuclear runaway occurs, producing a Type Ia supernova."
@@ -849,7 +810,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 40,
-    "audioUrl": "/audio/files-6451da5a2b1d5.mp3",
     "speakerText": [
       "Narrator: Questions 39 through 42 are based on an astronomy lecture about stellar evolution.",
       "Professor: Today we examine white dwarfs, the final evolutionary stage for stars whose initial mass is less than eight solar masses. When stars like our Sun exhaust hydrogen fuel in their cores, they expand into red giants and subsequently shed their outer envelopes, leaving behind an Earth-sized remnant composed primarily of electron-degenerate matter. In this state, normal thermal pressure no longer supports the star against gravitational collapse; instead, electron degeneracy pressure\u2014governed by the Pauli exclusion principle\u2014halts contraction. However, if accretion pushes the remnant beyond the Chandrasekhar limit of 1.4 solar masses, a catastrophic thermonuclear runaway occurs, producing a Type Ia supernova."
@@ -870,7 +830,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 41,
-    "audioUrl": "/audio/files-6451da66e5f42.mp3",
     "speakerText": [
       "Narrator: Questions 39 through 42 are based on an astronomy lecture about stellar evolution.",
       "Professor: Today we examine white dwarfs, the final evolutionary stage for stars whose initial mass is less than eight solar masses. When stars like our Sun exhaust hydrogen fuel in their cores, they expand into red giants and subsequently shed their outer envelopes, leaving behind an Earth-sized remnant composed primarily of electron-degenerate matter. In this state, normal thermal pressure no longer supports the star against gravitational collapse; instead, electron degeneracy pressure\u2014governed by the Pauli exclusion principle\u2014halts contraction. However, if accretion pushes the remnant beyond the Chandrasekhar limit of 1.4 solar masses, a catastrophic thermonuclear runaway occurs, producing a Type Ia supernova."
@@ -891,7 +850,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 42,
-    "audioUrl": "/audio/files-645316049f46e.mp3",
     "speakerText": [
       "Narrator: Questions 39 through 42 are based on an astronomy lecture about stellar evolution.",
       "Professor: Today we examine white dwarfs, the final evolutionary stage for stars whose initial mass is less than eight solar masses. When stars like our Sun exhaust hydrogen fuel in their cores, they expand into red giants and subsequently shed their outer envelopes, leaving behind an Earth-sized remnant composed primarily of electron-degenerate matter. In this state, normal thermal pressure no longer supports the star against gravitational collapse; instead, electron degeneracy pressure\u2014governed by the Pauli exclusion principle\u2014halts contraction. However, if accretion pushes the remnant beyond the Chandrasekhar limit of 1.4 solar masses, a catastrophic thermonuclear runaway occurs, producing a Type Ia supernova."
@@ -912,7 +870,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 43,
-    "audioUrl": "/audio/files-645319cf768f6.mp3",
     "speakerText": [
       "Narrator: Questions 43 through 46 are based on an archaeology talk on ancient Maya agricultural hydraulics.",
       "Lecturer: Contrary to earlier historical assumptions that Maya civilization practiced only slash-and-burn horticulture, recent LiDAR aerial surveys reveal sophisticated wetland canal networks across the Yucatan lowlands. Known as raised fields or chinampas, these rectangular earthworks allowed year-round cultivation by managing seasonal monsoon floods and retaining fertile aquatic muck. Canals served a dual role: providing constant irrigation during protracted dry spells and serving as aquatic transportation arteries for trade goods."
@@ -933,7 +890,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 44,
-    "audioUrl": "/audio/files-6a4f421fed7af.mp3",
     "speakerText": [
       "Narrator: Questions 43 through 46 are based on an archaeology talk on ancient Maya agricultural hydraulics.",
       "Lecturer: Contrary to earlier historical assumptions that Maya civilization practiced only slash-and-burn horticulture, recent LiDAR aerial surveys reveal sophisticated wetland canal networks across the Yucatan lowlands. Known as raised fields or chinampas, these rectangular earthworks allowed year-round cultivation by managing seasonal monsoon floods and retaining fertile aquatic muck. Canals served a dual role: providing constant irrigation during protracted dry spells and serving as aquatic transportation arteries for trade goods."
@@ -954,7 +910,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 45,
-    "audioUrl": "/audio/files-6a50449710e6a.mp3",
     "speakerText": [
       "Narrator: Questions 43 through 46 are based on an archaeology talk on ancient Maya agricultural hydraulics.",
       "Lecturer: Contrary to earlier historical assumptions that Maya civilization practiced only slash-and-burn horticulture, recent LiDAR aerial surveys reveal sophisticated wetland canal networks across the Yucatan lowlands. Known as raised fields or chinampas, these rectangular earthworks allowed year-round cultivation by managing seasonal monsoon floods and retaining fertile aquatic muck. Canals served a dual role: providing constant irrigation during protracted dry spells and serving as aquatic transportation arteries for trade goods."
@@ -975,7 +930,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 46,
-    "audioUrl": "/audio/files-6a504767c7532.mp3",
     "speakerText": [
       "Narrator: Questions 43 through 46 are based on an archaeology talk on ancient Maya agricultural hydraulics.",
       "Lecturer: Contrary to earlier historical assumptions that Maya civilization practiced only slash-and-burn horticulture, recent LiDAR aerial surveys reveal sophisticated wetland canal networks across the Yucatan lowlands. Known as raised fields or chinampas, these rectangular earthworks allowed year-round cultivation by managing seasonal monsoon floods and retaining fertile aquatic muck. Canals served a dual role: providing constant irrigation during protracted dry spells and serving as aquatic transportation arteries for trade goods."
@@ -996,7 +950,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 47,
-    "audioUrl": "/audio/files-6a504df95b924.mp3",
     "speakerText": [
       "Narrator: Questions 47 through 50 are based on an environmental science lecture on urban heat islands.",
       "Professor: Urban Heat Islands, or UHIs, occur when metropolitan centers experience significantly higher ambient temperatures than surrounding rural landscapes. Impervious surfaces such as dark asphalt and concrete exhibit high thermal mass, absorbing daytime solar irradiance and slowly re-radiating heat throughout the nocturnal hours. Furthermore, the scarcity of vegetative evapotranspiration limits natural evaporative cooling. Mitigation strategies include reflective cool roofs, permeable pavements, and urban greening corridors."
@@ -1017,7 +970,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 48,
-    "audioUrl": "/audio/files-6a504eb3f3240.mp3",
     "speakerText": [
       "Narrator: Questions 47 through 50 are based on an environmental science lecture on urban heat islands.",
       "Professor: Urban Heat Islands, or UHIs, occur when metropolitan centers experience significantly higher ambient temperatures than surrounding rural landscapes. Impervious surfaces such as dark asphalt and concrete exhibit high thermal mass, absorbing daytime solar irradiance and slowly re-radiating heat throughout the nocturnal hours. Furthermore, the scarcity of vegetative evapotranspiration limits natural evaporative cooling. Mitigation strategies include reflective cool roofs, permeable pavements, and urban greening corridors."
@@ -1038,7 +990,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 49,
-    "audioUrl": "/audio/files-6a55ad3cb794a.mp3",
     "speakerText": [
       "Narrator: Questions 47 through 50 are based on an environmental science lecture on urban heat islands.",
       "Professor: Urban Heat Islands, or UHIs, occur when metropolitan centers experience significantly higher ambient temperatures than surrounding rural landscapes. Impervious surfaces such as dark asphalt and concrete exhibit high thermal mass, absorbing daytime solar irradiance and slowly re-radiating heat throughout the nocturnal hours. Furthermore, the scarcity of vegetative evapotranspiration limits natural evaporative cooling. Mitigation strategies include reflective cool roofs, permeable pavements, and urban greening corridors."
@@ -1059,7 +1010,6 @@ export const OFFICIAL_SIMULATION_QUESTIONS: Question[] = [
     "section": "listening",
     "part": "Part C",
     "questionNumber": 50,
-    "audioUrl": "/audio/files-6a55ae41de66d.mp3",
     "speakerText": [
       "Narrator: Questions 47 through 50 are based on an environmental science lecture on urban heat islands.",
       "Professor: Urban Heat Islands, or UHIs, occur when metropolitan centers experience significantly higher ambient temperatures than surrounding rural landscapes. Impervious surfaces such as dark asphalt and concrete exhibit high thermal mass, absorbing daytime solar irradiance and slowly re-radiating heat throughout the nocturnal hours. Furthermore, the scarcity of vegetative evapotranspiration limits natural evaporative cooling. Mitigation strategies include reflective cool roofs, permeable pavements, and urban greening corridors."

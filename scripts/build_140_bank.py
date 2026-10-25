@@ -1,5 +1,4 @@
 import os
-audio_files = sorted([f for f in os.listdir("/projects/eprt-cbt/public/audio") if f.endswith(".mp3") and os.path.getsize(f"/projects/eprt-cbt/public/audio/{f}") > 10000])
 import json
 
 # Full 140 Question Bank Generator for EPrT Telkom University (TOEFL ITP Standard)
@@ -252,16 +251,55 @@ part_a_data = [
         "A",
         "'The odds are in our favor' bermakna peluang kemenangan mereka sangat besar berkat persiapan matang.",
         "Probability / Optimism"
+    ),
+    (
+        ["Man: I was told that the art history midterm is going to be open-book.", "Woman: Don't hold your breath! Professor Campbell specifically announced yesterday that no notes are permitted."],
+        "What does the woman imply about the exam?",
+        {"A": "Students will not be allowed to use open books or notes.", "B": "The professor cancelled the midterm.", "C": "She expects the exam to be extremely easy.", "D": "She forgot her textbook at home."},
+        "A",
+        "Idiom 'Don't hold your breath' digunakan untuk menyatakan bahwa suatu hal sangat kecil kemungkinannya terjadi (tidak akan open-book).",
+        "Idiom: 'Don't hold your breath'"
+    ),
+    (
+        ["Woman: I'm really struggling to get my head around this recursive algorithm.", "Man: Have you tried tracing it step-by-step with a small array on paper? That usually does the trick for me."],
+        "What does the man suggest the woman do?",
+        {"A": "Trace the recursive steps manually on paper.", "B": "Skip the algorithm assignment.", "C": "Ask the professor to rewrite the code.", "D": "Run the code on a faster computer."},
+        "A",
+        "Pria menyarankan: 'Have you tried tracing it step-by-step with a small array on paper? That usually does the trick' (mengerjakan langkah per langkah di kertas).",
+        "Suggestion: 'Have you tried...?'"
+    ),
+    (
+        ["Man: Do we need to bring our own dissection tools to the biology lab tomorrow morning?", "Woman: Not at all; the teaching assistant has already prepared complete kits at every workbench."],
+        "What does the woman say about the biology lab?",
+        {"A": "All required dissection instruments will be provided.", "B": "The lab session was postponed to next week.", "C": "Students must purchase their own tool kits.", "D": "Workbenches will be closed tomorrow."},
+        "A",
+        "Wanita menyatakan bahwa asisten lab telah menyiapkan kit lengkap di setiap meja kerja, sehingga mahasiswa tidak perlu membawa sendiri.",
+        "Stated Detail & Clarification"
+    ),
+    (
+        ["Woman: Should we begin administering our survey before the ethics review board gives their verdict?", "Man: Under no circumstances! Proceeding without authorization would void our entire research study."],
+        "What does the man mean?",
+        {"A": "They must strictly wait for ethical approval before surveying.", "B": "They can distribute the survey informally.", "C": "The ethics board approved the study already.", "D": "Their research project was permanently rejected."},
+        "A",
+        "Frasa 'Under no circumstances!' adalah larangan mutlak, artinya mereka sama sekali tidak boleh menyebar kuesioner sebelum izin terbit.",
+        "Emphatic Prohibition ('Under no circumstances')"
+    ),
+    (
+        ["Man: Has the faculty committee selected a keynote speaker for the annual symposium yet?", "Woman: Not that I know of; they are still reviewing nomination files submitted by the departments."],
+        "What does the woman say about the keynote speaker?",
+        {"A": "A final selection has not yet been determined.", "B": "The keynote speaker declined the invitation.", "C": "The symposium was called off by the dean.", "D": "Nominations were closed last month."},
+        "A",
+        "Ungkapan 'Not that I know of; they are still reviewing' bermakna keputusan akhir pemilihan pembicara utama belum ditetapkan.",
+        "Negative Indirect Information ('Not that I know of')"
     )
 ]
 
-for i, item in enumerate(part_a_data):
+for i, item in enumerate(part_a_data[:30]):
     questions.append({
         "id": qid,
         "section": "listening",
         "part": "Part A",
         "questionNumber": qid,
-        "audioUrl": f"/audio/{audio_files[qid - 1]}",
         "speakerText": item[0],
         "prompt": item[1],
         "options": item[2],
@@ -312,7 +350,6 @@ for block in part_b_data:
             "section": "listening",
             "part": "Part B",
             "questionNumber": qid,
-            "audioUrl": f"/audio/{audio_files[qid - 1]}",
             "speakerText": block["speakers"],
             "prompt": item[0],
             "options": item[1],
@@ -369,7 +406,6 @@ for block in part_c_data:
             "section": "listening",
             "part": "Part C",
             "questionNumber": qid,
-            "audioUrl": f"/audio/{audio_files[qid - 1]}",
             "speakerText": block["speakers"],
             "prompt": item[0],
             "options": item[1],

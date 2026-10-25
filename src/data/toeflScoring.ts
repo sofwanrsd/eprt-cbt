@@ -1,44 +1,157 @@
-// Official TOEFL ITP / EPrT Telkom University Conversion Scale
+// ETS TOEFL ITP / EPrT Diagnostic Conversion Scales
+// Standard Level 1 (Intermediate to Advanced College Level)
+// Range: 310 - 677. Scaled subscores: 31 - 68 (Listening/Structure), 31 - 67 (Reading).
 
-const LISTENING_TABLE: Record<number, number> = {
-  0: 24, 1: 25, 2: 26, 3: 27, 4: 28, 5: 29, 6: 30, 7: 31, 8: 32, 9: 32,
-  10: 33, 11: 35, 12: 37, 13: 37, 14: 38, 15: 41, 16: 41, 17: 42, 18: 43, 19: 44,
-  20: 45, 21: 45, 22: 46, 23: 47, 24: 47, 25: 48, 26: 48, 27: 49, 28: 49, 29: 50,
-  30: 51, 31: 51, 32: 52, 33: 52, 34: 53, 35: 54, 36: 54, 37: 55, 38: 56, 39: 57,
-  40: 57, 41: 58, 42: 59, 43: 60, 44: 61, 45: 62, 46: 63, 47: 65, 48: 66, 49: 67, 50: 68
-};
+import { ScoreReport, SectionId } from '../types';
 
-const STRUCTURE_TABLE: Record<number, number> = {
-  0: 20, 1: 20, 2: 21, 3: 22, 4: 23, 5: 25, 6: 26, 7: 27, 8: 29, 9: 31,
-  10: 33, 11: 35, 12: 36, 13: 37, 14: 38, 15: 40, 16: 40, 17: 41, 18: 42, 19: 43,
-  20: 44, 21: 45, 22: 46, 23: 47, 24: 48, 25: 49, 26: 50, 27: 51, 28: 52, 29: 53,
-  30: 54, 31: 55, 32: 56, 33: 57, 34: 58, 35: 60, 36: 61, 37: 63, 38: 65, 39: 67, 40: 68
-};
+export const SECTION_TIMINGS = {
+  listening: {
+    section: 'listening' as SectionId,
+    title: 'Section 1: Listening Comprehension',
+    questionCount: 50,
+    durationMinutes: 45,
+    durationSeconds: 45 * 60, // 2700s
+  },
+  structure: {
+    section: 'structure' as SectionId,
+    title: 'Section 2: Structure & Written Expression',
+    questionCount: 40,
+    durationMinutes: 25,
+    durationSeconds: 25 * 60, // 1500s
+  },
+  reading: {
+    section: 'reading' as SectionId,
+    title: 'Section 3: Reading Comprehension',
+    questionCount: 50,
+    durationMinutes: 55,
+    durationSeconds: 55 * 60, // 3300s
+  },
+} as const;
 
-const READING_TABLE: Record<number, number> = {
-  0: 21, 1: 22, 2: 23, 3: 23, 4: 24, 5: 25, 6: 26, 7: 27, 8: 28, 9: 28,
-  10: 29, 11: 30, 12: 31, 13: 32, 14: 34, 15: 35, 16: 36, 17: 37, 18: 38, 19: 39,
-  20: 40, 21: 41, 22: 42, 23: 43, 24: 43, 25: 44, 26: 45, 27: 46, 28: 46, 29: 47,
-  30: 48, 31: 48, 32: 49, 33: 50, 34: 51, 35: 52, 36: 52, 37: 53, 38: 54, 39: 54,
-  40: 55, 41: 56, 42: 57, 43: 58, 44: 59, 45: 60, 46: 61, 47: 63, 48: 65, 49: 66, 50: 67
-};
+export const TOTAL_EXAM_QUESTIONS = 140;
+export const TOTAL_EXAM_MINUTES = 125; // 45 + 25 + 55 = 125 minutes
 
-export function calculateToeflScore(rawListening: number, rawStructure: number, rawReading: number) {
-  const scaledListening = LISTENING_TABLE[Math.min(50, Math.max(0, rawListening))] || 24;
-  const scaledStructure = STRUCTURE_TABLE[Math.min(40, Math.max(0, rawStructure))] || 20;
-  const scaledReading = READING_TABLE[Math.min(50, Math.max(0, rawReading))] || 21;
+// Section 1: Listening Comprehension (50 questions -> Scale: 31 - 68)
+const LISTENING_TABLE: number[] = [
+  31, 31, 31, 31, 31, 32, 33, 34, 35, 36, // 0-9
+  37, 38, 39, 40, 41, 42, 43, 44, 45, 46, // 10-19
+  47, 48, 48, 49, 50, 51, 51, 52, 52, 53, // 20-29
+  54, 54, 55, 56, 57, 57, 58, 59, 60, 61, // 30-39
+  62, 63, 64, 65, 66, 67, 68, 68, 68, 68, 68  // 40-50
+];
 
-  const totalScore = Math.round(((scaledListening + scaledStructure + scaledReading) * 10) / 3);
+// Section 2: Structure & Written Expression (40 questions -> Scale: 31 - 68)
+const STRUCTURE_TABLE: number[] = [
+  31, 31, 31, 31, 31, 32, 33, 34, 35, 36, // 0-9
+  37, 38, 40, 40, 41, 42, 43, 44, 45, 46, // 10-19
+  47, 48, 49, 50, 51, 52, 53, 54, 55, 56, // 20-29
+  57, 58, 60, 61, 63, 65, 66, 67, 68, 68, 68  // 30-40
+];
+
+// Section 3: Reading Comprehension (50 questions -> Scale: 31 - 67)
+const READING_TABLE: number[] = [
+  31, 31, 31, 31, 31, 32, 33, 34, 35, 36, // 0-9
+  37, 38, 39, 40, 41, 42, 43, 44, 45, 46, // 10-19
+  47, 48, 48, 49, 50, 51, 52, 52, 53, 54, // 20-29
+  54, 55, 56, 57, 58, 59, 60, 61, 62, 63, // 30-39
+  63, 64, 65, 65, 66, 67, 67, 67, 67, 67, 67  // 40-50
+];
+
+export function rawToScaledListening(raw: number): number {
+  const clamped = Math.max(0, Math.min(50, Math.round(raw)));
+  return LISTENING_TABLE[clamped];
+}
+
+export function rawToScaledStructure(raw: number): number {
+  const clamped = Math.max(0, Math.min(40, Math.round(raw)));
+  return STRUCTURE_TABLE[clamped];
+}
+
+export function rawToScaledReading(raw: number): number {
+  const clamped = Math.max(0, Math.min(50, Math.round(raw)));
+  return READING_TABLE[clamped];
+}
+
+export function calculateToeflScore(
+  rawListening: number,
+  rawStructure: number,
+  rawReading: number,
+  totalQ: number = TOTAL_EXAM_QUESTIONS
+): ScoreReport {
+  const clampedL = Math.max(0, Math.min(50, Math.round(rawListening)));
+  const clampedS = Math.max(0, Math.min(40, Math.round(rawStructure)));
+  const clampedR = Math.max(0, Math.min(50, Math.round(rawReading)));
+
+  const scaledL = rawToScaledListening(clampedL);
+  const scaledS = rawToScaledStructure(clampedS);
+  const scaledR = rawToScaledReading(clampedR);
+
+  // Official formula: ((Scaled L + Scaled S + Scaled R) / 3) * 10, rounded to nearest whole integer
+  const totalScore = Math.round(((scaledL + scaledS + scaledR) * 10) / 3);
+
+  const totalRaw = clampedL + clampedS + clampedR;
+  const accuracyPercentage = Math.round((totalRaw / totalQ) * 100);
+
+  const sectionAccuracy = {
+    listening: Math.round((clampedL / 50) * 100),
+    structure: Math.round((clampedS / 40) * 100),
+    reading: Math.round((clampedR / 50) * 100),
+  };
+
+  // Identify lowest performing section as priority
+  const sectionScores = [
+    { section: 'listening' as SectionId, accuracy: sectionAccuracy.listening, scaled: scaledL },
+    { section: 'structure' as SectionId, accuracy: sectionAccuracy.structure, scaled: scaledS },
+    { section: 'reading' as SectionId, accuracy: sectionAccuracy.reading, scaled: scaledR },
+  ];
+  sectionScores.sort((a, b) => a.accuracy - b.accuracy);
+  const prioritySection = sectionScores[0].section;
+
+  const strengths: string[] = [];
+  const improvements: string[] = [];
+
+  if (sectionAccuracy.structure >= 70) {
+    strengths.push('Struktur tata bahasa (Structure & Written Expression) Anda solid di atas 70%.');
+  } else {
+    improvements.push('Perbanyak latihan pola inversi negatif, reduced relative clauses, dan keselarasan subjek-kata kerja pada Section 2.');
+  }
+
+  if (sectionAccuracy.listening >= 70) {
+    strengths.push('Pemahaman menyimak (Listening Comprehension) Anda kuat di atas 70%.');
+  } else {
+    improvements.push('Fokus dengarkan ujaran pembicara kedua pada Part A yang sering kali menjadi kunci jawaban berupa parafrasa sinonim.');
+  }
+
+  if (sectionAccuracy.reading >= 70) {
+    strengths.push('Kecepatan dan pemahaman wacana akademik (Reading Comprehension) Anda sangat baik.');
+  } else {
+    improvements.push('Gunakan teknik membaca skimming pertanyaan terlebih dahulu sebelum membaca teks lengkap untuk efisiensi waktu.');
+  }
+
+  if (strengths.length === 0) {
+    strengths.push('Percobaan telah diselesaikan dengan ketahanan fokus penuh 140 soal.');
+  }
 
   return {
-    rawListening,
-    rawStructure,
-    rawReading,
-    scaledListening,
-    scaledStructure,
-    scaledReading,
+    rawListening: clampedL,
+    rawStructure: clampedS,
+    rawReading: clampedR,
+    totalRaw,
+    totalQuestions: totalQ,
+    scaledListening: scaledL,
+    scaledStructure: scaledS,
+    scaledReading: scaledR,
     totalScore,
+    accuracyPercentage,
+    sectionAccuracy,
     passedStandardS1: totalScore >= 450,
-    passedS2OrHonors: totalScore >= 475
+    passedS2OrHonors: totalScore >= 475,
+    diagnosticAdvice: {
+      strengths,
+      improvements,
+      prioritySection,
+    },
+    disclaimer:
+      'Skor ini merupakan estimasi diagnostik berdasarkan matriks konversi standar TOEFL ITP dan ditujukan semata-mata sebagai sarana latihan mandiri mahasiswa Telkom University. Nilai ini bukan sertifikat resmi dari Language Center (LaC) Telkom University maupun ETS.',
   };
 }
