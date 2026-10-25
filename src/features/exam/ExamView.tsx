@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Question, SectionId } from '../../types';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import {
@@ -10,8 +10,8 @@ import {
   FileText,
   HelpCircle,
   Layers,
-  CheckCircle2,
-  BookOpen
+  BookOpen,
+  Keyboard
 } from 'lucide-react';
 
 interface ExamViewProps {
@@ -53,12 +53,60 @@ export const ExamView: React.FC<ExamViewProps> = ({
   const mapChunkSize = 50;
   const totalMapPages = Math.ceil(questions.length / mapChunkSize);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const pageOfCurrent = Math.floor(currentIndex / mapChunkSize);
     if (pageOfCurrent !== mapPage) {
       setMapPage(pageOfCurrent);
     }
   }, [currentIndex, mapPage]);
+
+  // Global Keyboard Shortcuts (A-D, 1-4, ArrowLeft/Right, N/P, F)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      const key = e.key.toUpperCase();
+
+      if (key === 'A' || key === '1') {
+        e.preventDefault();
+        onSelectOption('A');
+      } else if (key === 'B' || key === '2') {
+        e.preventDefault();
+        onSelectOption('B');
+      } else if (key === 'C' || key === '3') {
+        e.preventDefault();
+        onSelectOption('C');
+      } else if (key === 'D' || key === '4') {
+        e.preventDefault();
+        onSelectOption('D');
+      } else if (e.key === 'ArrowRight' || key === 'N') {
+        if (currentIndex < questions.length - 1) {
+          e.preventDefault();
+          onNavigateIndex(currentIndex + 1);
+        }
+      } else if (e.key === 'ArrowLeft' || key === 'P') {
+        if (currentIndex > 0) {
+          e.preventDefault();
+          onNavigateIndex(currentIndex - 1);
+        }
+      } else if (key === 'F') {
+        e.preventDefault();
+        onToggleFlag();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, questions.length, onSelectOption, onNavigateIndex, onToggleFlag]);
 
   const currentChunkQuestions = useMemo(() => {
     const start = mapPage * mapChunkSize;
@@ -130,6 +178,11 @@ export const ExamView: React.FC<ExamViewProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-zinc-400 font-mono bg-[#151b28] px-2.5 py-1 rounded-lg border border-[#1e2638]">
+            <Keyboard className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Shortcuts: 1-4 / A-D · ← → · F</span>
+          </div>
+
           <button
             type="button"
             onClick={onOpenDirections}
@@ -253,20 +306,25 @@ export const ExamView: React.FC<ExamViewProps> = ({
                           key={key}
                           type="button"
                           onClick={() => onSelectOption(key)}
-                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3.5 ${borderClass}`}
+                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 ${borderClass}`}
                         >
-                          <div
-                            className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
-                              isSelected
-                                ? 'bg-indigo-600 text-white shadow-sm'
-                                : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
-                            }`}
-                          >
-                            {key}
+                          <div className="flex items-start gap-3.5">
+                            <div
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
+                                isSelected
+                                  ? 'bg-indigo-600 text-white shadow-sm'
+                                  : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
+                              }`}
+                            >
+                              {key}
+                            </div>
+                            <div className="text-sm font-normal pt-0.5 leading-normal">
+                              {optText}
+                            </div>
                           </div>
-                          <div className="text-sm font-normal pt-0.5 leading-normal">
-                            {optText}
-                          </div>
+                          <span className="text-[10px] font-mono text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-[#10141e] border border-[#1e2638] shrink-0 mt-0.5">
+                            Key: {key}
+                          </span>
                         </button>
                       );
                     })}
@@ -434,20 +492,25 @@ export const ExamView: React.FC<ExamViewProps> = ({
                           key={key}
                           type="button"
                           onClick={() => onSelectOption(key)}
-                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3.5 ${borderClass}`}
+                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 ${borderClass}`}
                         >
-                          <div
-                            className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
-                              isSelected
-                                ? 'bg-indigo-600 text-white shadow-sm'
-                                : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
-                            }`}
-                          >
-                            {key}
+                          <div className="flex items-start gap-3.5">
+                            <div
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
+                                isSelected
+                                  ? 'bg-indigo-600 text-white shadow-sm'
+                                  : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
+                              }`}
+                            >
+                              {key}
+                            </div>
+                            <div className="text-sm font-normal pt-0.5 leading-normal">
+                              {optText}
+                            </div>
                           </div>
-                          <div className="text-sm font-normal pt-0.5 leading-normal">
-                            {optText}
-                          </div>
+                          <span className="text-[10px] font-mono text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-[#10141e] border border-[#1e2638] shrink-0 mt-0.5">
+                            Key: {key}
+                          </span>
                         </button>
                       );
                     })}

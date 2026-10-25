@@ -85,4 +85,55 @@ describe('Local Session & History Persistence Store', () => {
     expect(history.length).toBe(20);
     expect(history[0].id).toBe('attempt-25'); // latest first
   });
+
+  it('exports and imports diagnostic history JSON correctly', () => {
+    const record: CompletedExamRecord = {
+      id: 'export-test-1',
+      completedAt: new Date().toISOString(),
+      mode: 'exam',
+      score: {
+        rawListening: 30,
+        rawStructure: 20,
+        rawReading: 30,
+        totalRaw: 80,
+        totalQuestions: 140,
+        scaledListening: 50,
+        scaledStructure: 48,
+        scaledReading: 51,
+        totalScore: 497,
+        accuracyPercentage: 57,
+        sectionAccuracy: { listening: 60, structure: 50, reading: 60 },
+        passedStandardS1: true,
+        passedS2OrHonors: true,
+        diagnosticAdvice: { strengths: [], improvements: [], prioritySection: 'structure' },
+        disclaimer: 'Estimation',
+      },
+    };
+
+    sessionStore.saveAttempt(record);
+    const exportedStr = sessionStore.exportHistoryJson();
+    expect(exportedStr).toContain('export-test-1');
+
+    // Clear and re-import
+    sessionStore.clearHistory();
+    expect(sessionStore.loadHistory().length).toBe(0);
+
+    const importRes = sessionStore.importHistoryJson(exportedStr);
+    expect(importRes.success).toBe(true);
+    expect(importRes.importedCount).toBe(1);
+    expect(sessionStore.loadHistory()[0].id).toBe('export-test-1');
+  });
+
+  it('persists and retrieves user accessibility settings', () => {
+    expect(sessionStore.loadSettings()).toEqual({
+      soundEnabled: true,
+      fontSize: 'normal',
+    });
+
+    sessionStore.saveSettings({ soundEnabled: false, fontSize: 'large' });
+    expect(sessionStore.loadSettings()).toEqual({
+      soundEnabled: false,
+      fontSize: 'large',
+    });
+  });
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Headphones, AlertCircle, Volume2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Headphones, AlertCircle } from 'lucide-react';
 
 interface AudioPlayerProps {
   speakerText?: string[];
@@ -11,6 +11,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioUrl,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [activeTurnIndex, setActiveTurnIndex] = useState<number | null>(null);
   const [speechRate, setSpeechRate] = useState(0.95);
   const [useSpeechFallback, setUseSpeechFallback] = useState(!audioUrl);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -28,6 +29,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }
     utteranceQueueRef.current = [];
     setIsPlaying(false);
+    setActiveTurnIndex(null);
   }, []);
 
   // Stop playback when question changes
@@ -82,13 +84,19 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         utt.voice = femaleVoice;
       }
 
+      utt.onstart = () => {
+        setActiveTurnIndex(idx);
+      };
+
       utt.onerror = () => {
         setIsPlaying(false);
+        setActiveTurnIndex(null);
       };
 
       if (idx === speakerText.length - 1) {
         utt.onend = () => {
           setIsPlaying(false);
+          setActiveTurnIndex(null);
         };
       }
 
@@ -146,6 +154,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     playSpeechSynthesis();
   };
 
+  // Get current active speaker label
+  const activeSpeakerLabel =
+    activeTurnIndex !== null && speakerText && speakerText[activeTurnIndex]
+      ? speakerText[activeTurnIndex].split(':')[0]
+      : null;
+
   return (
     <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
       {audioUrl && !useSpeechFallback && (
@@ -174,8 +188,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <div className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
             <span>Listening Audio Dialogue</span>
             {isPlaying && (
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium">
-                Playing
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium animate-pulse">
+                {activeSpeakerLabel ? `Speaking: ${activeSpeakerLabel}` : 'Playing'}
               </span>
             )}
           </div>

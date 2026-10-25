@@ -14,7 +14,9 @@ import {
   CheckCircle2,
   Layers,
   BarChart3,
-  Calendar
+  Calendar,
+  Download,
+  Upload
 } from 'lucide-react';
 import { SectionId } from '../../types';
 import { ActiveSessionData, CompletedExamRecord, sessionStore } from '../../utils/sessionStorage';
@@ -43,6 +45,34 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
       sessionStore.clearHistory();
       onRefreshHistory();
     }
+  };
+
+  const handleExportHistory = () => {
+    const jsonStr = sessionStore.exportHistoryJson();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `eprt_cbt_history_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportHistory = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const res = sessionStore.importHistoryJson(text);
+      if (res.success) {
+        alert(`Berhasil mengimpor ${res.importedCount} riwayat latihan!`);
+        onRefreshHistory();
+      } else {
+        alert(`Gagal mengimpor: ${res.error || 'Format berkas riwayat tidak valid'}`);
+      }
+    };
+    reader.readAsText(file);
   };
 
   // Derive real statistics from attempts history
@@ -365,16 +395,44 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
             <Calendar className="w-4 h-4 text-zinc-400" />
             <span>Recent Exam Activity</span>
           </h2>
-          {history.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearHistory}
-              className="text-xs text-zinc-500 hover:text-rose-400 flex items-center gap-1.5 transition-colors"
+          <div className="flex items-center gap-2">
+            {history.length > 0 && (
+              <button
+                type="button"
+                onClick={handleExportHistory}
+                className="text-xs text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors px-2.5 py-1 rounded-lg bg-[#151b28] border border-[#1e2638]"
+                title="Unduh Riwayat sebagai JSON"
+              >
+                <Download className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Ekspor</span>
+              </button>
+            )}
+
+            <label
+              className="text-xs text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors px-2.5 py-1 rounded-lg bg-[#151b28] border border-[#1e2638] cursor-pointer"
+              title="Unggah Riwayat Sebelumnya"
             >
-              <Trash2 className="w-3 h-3" />
-              <span>Bersihkan Riwayat</span>
-            </button>
-          )}
+              <Upload className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Impor</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImportHistory}
+                className="hidden"
+              />
+            </label>
+
+            {history.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearHistory}
+                className="text-xs text-zinc-500 hover:text-rose-400 flex items-center gap-1.5 transition-colors px-2.5 py-1 rounded-lg bg-[#151b28] border border-[#1e2638]"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Bersihkan</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {history.length === 0 ? (

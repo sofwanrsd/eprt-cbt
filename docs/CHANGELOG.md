@@ -4,6 +4,37 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [2.2.0] - 2026-10-25 (Keyboard Navigation, Advanced Diagnostics & Performance Splitting)
+
+### Exam Keyboard Shortcuts
+- **Standard CBT Keybindings:** Implemented full keyboard navigation in `src/features/exam/ExamView.tsx`:
+  - `A` / `1`, `B` / `2`, `C` / `3`, `D` / `4` to pick answer options.
+  - `ArrowRight` / `N` for next question.
+  - `ArrowLeft` / `P` for previous question.
+  - `F` to toggle doubt/flag (`Ragu-ragu`).
+  - Input field guard: ignores shortcuts when user interacts with form inputs.
+- **Visual Shortcut Badges:** Displayed subtle `[Key: A]` tags on options and shortcut guide in the navigation bar.
+
+### Diagnostic Sub-Part & Grammar Mastery
+- **Sub-Part Mastery Analytics:** Added detailed accuracy breakdown by question part in `src/features/results/ResultsView.tsx`:
+  - Listening Part A (Short Dialogues), Part B (Conversations), Part C (Lectures).
+  - Structure Part A (Sentence Completion) & Part B (Error Identification).
+  - Reading Comprehension Passages.
+- **Grammatical Priority Focus:** Identifies the top grammatical topics where the student made mistakes (e.g. Inversion, Participle Clauses, Subject-Verb Agreement) to focus future study.
+
+### Data Portability & Settings Persistence
+- **History Export & Import:** Added JSON export and import in `LobbyView.tsx` allowing students to download and restore their diagnostic attempt records.
+- **Persistent Accessibility Preferences:** Saves font size (`normal` / `large`) and sound toggle (`on` / `off`) to `localStorage`.
+
+### Performance & Bundle Optimization
+- **Data Splitting & Lazy Bundling:** Split 470 CeLOE practice questions into `src/data/celoeQuestions.ts` and configured Rollup `manualChunks` in `vite.config.ts`.
+- **Bundle Size Reduction:** Reduced main application bundle from **1,089 kB** to **255 kB** (81% decrease, gzipped to 49 kB).
+
+### Automated Testing
+- **Expanded Suite:** Added test cases for keyboard shortcut navigation, history export/import, and settings persistence, bringing total tests to **27 across 6 files (100% PASS)**.
+
+---
+
 ## [2.1.0] - 2026-10-25 (Ultimate UI/UX Overhaul & Design System)
 
 ### Design System & Visual Overhaul

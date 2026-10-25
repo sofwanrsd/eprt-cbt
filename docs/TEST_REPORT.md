@@ -13,14 +13,14 @@
 
  ✓ src/test/toeflScoring.test.ts (6 tests)
  ✓ src/test/questionValidator.test.ts (4 tests)
- ✓ src/test/sessionStorage.test.ts (3 tests)
- ✓ src/test/ExamFlow.test.tsx (5 tests)
+ ✓ src/test/sessionStorage.test.ts (5 tests)
+ ✓ src/test/ExamFlow.test.tsx (6 tests)
  ✓ src/test/CustomBankModal.test.tsx (3 tests)
  ✓ src/test/ResultsView.test.tsx (3 tests)
 
  Test Files  6 passed (6)
-      Tests  24 passed (24)
-   Duration  2.27s
+      Tests  27 passed (27)
+   Duration  2.35s
 ```
 
 ---
@@ -51,6 +51,8 @@
 | `saves and loads active exam session correctly` | Verifies that user answers, flagged states, and deadlines survive roundtrip storage. | PASS |
 | `clears session safely` | Confirms completed or discarded exams remove transient session data from localStorage. | PASS |
 | `records attempt history and limits to 20 recent attempts` | Ensures attempt history caps at 20 items to prevent unbounded storage growth. | PASS |
+| `exports and imports diagnostic history JSON correctly` | Confirms full roundtrip export of student diagnostic attempts and error-safe import. | PASS |
+| `persists and retrieves user accessibility settings` | Verifies persistent font size and sound effect preferences in localStorage. | PASS |
 
 ### D. Exam User Interaction Flow (`src/test/ExamFlow.test.tsx`)
 | Test Case | Description | Result |
@@ -60,6 +62,7 @@
 | `invokes onToggleFlag when flag button is clicked` | Validates question marking for review. | PASS |
 | `invokes onOpenDirections when Petunjuk Soal is clicked` | Verifies directions modal trigger. | PASS |
 | `navigates to next question index when Selanjutnya is clicked` | Verifies pagination navigation controls. | PASS |
+| `handles keyboard shortcuts for option selection and navigation` | Confirms keybindings: A-D / 1-4 for choices, arrow keys for navigation, and F for flags. | PASS |
 
 ### E. Custom Bank Manager Modal (`src/test/CustomBankModal.test.tsx`)
 | Test Case | Description | Result |
@@ -86,5 +89,5 @@ $ tsc --noEmit
 
 $ bun run build
 $ tsc && vite build
-# Result: Production bundle successfully built in /dist/
+# Result: Optimized chunks built in /dist/ (Main bundle reduced to 255 kB, CeLOE data split to 505 kB)
 ```

@@ -1,7 +1,6 @@
-import React from 'react';
-import { ScoreReport } from '../../types';
+import React, { useMemo } from 'react';
+import { ScoreReport, Question } from '../../types';
 import {
-  Award,
   CheckCircle2,
   XCircle,
   RotateCcw,
@@ -15,11 +14,14 @@ import {
   ShieldCheck,
   AlertTriangle,
   Lightbulb,
-  ArrowRight
+  Layers,
+  Sparkles
 } from 'lucide-react';
 
 interface ResultsViewProps {
   score: ScoreReport;
+  questions?: Question[];
+  userAnswers?: Record<number, 'A' | 'B' | 'C' | 'D'>;
   onReview: () => void;
   onRetry: () => void;
   onReturnToLobby: () => void;
@@ -27,6 +29,8 @@ interface ResultsViewProps {
 
 export const ResultsView: React.FC<ResultsViewProps> = ({
   score,
+  questions,
+  userAnswers,
   onReview,
   onRetry,
   onReturnToLobby,
@@ -35,13 +39,54 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
     window.print();
   };
 
-  const todayStr = new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date());
-
   const incorrectCount = score.totalQuestions - score.totalRaw;
+
+  // Derive Part-by-Part and Skill Breakdown if questions and answers are available
+  const subpartStats = useMemo(() => {
+    if (!questions || !userAnswers) return null;
+    const map: Record<string, { label: string; total: number; correct: number }> = {
+      'listening-Part A': { label: 'Listening Part A: Short Dialogues', total: 0, correct: 0 },
+      'listening-Part B': { label: 'Listening Part B: Longer Conversations', total: 0, correct: 0 },
+      'listening-Part C': { label: 'Listening Part C: Academic Talks', total: 0, correct: 0 },
+      'structure-Part A': { label: 'Structure Part A: Sentence Completion', total: 0, correct: 0 },
+      'structure-Part B': { label: 'Structure Part B: Error Identification', total: 0, correct: 0 },
+      'reading-Part A': { label: 'Reading Comprehension Passages', total: 0, correct: 0 },
+    };
+
+    questions.forEach((q) => {
+      const key = `${q.section}-${q.part || 'Part A'}`;
+      if (map[key]) {
+        map[key].total += 1;
+        if (userAnswers[q.id] === q.correctAnswer) {
+          map[key].correct += 1;
+        }
+      }
+    });
+
+    return Object.values(map).filter((item) => item.total > 0);
+  }, [questions, userAnswers]);
+
+  // Derive Grammar/Rule Category Analysis
+  const ruleWeaknesses = useMemo(() => {
+    if (!questions || !userAnswers) return [];
+    const ruleMap: Record<string, { total: number; missed: number }> = {};
+
+    questions.forEach((q) => {
+      if (q.ruleCategory && q.section === 'structure') {
+        const cat = q.ruleCategory;
+        if (!ruleMap[cat]) ruleMap[cat] = { total: 0, missed: 0 };
+        ruleMap[cat].total += 1;
+        if (userAnswers[q.id] !== q.correctAnswer) {
+          ruleMap[cat].missed += 1;
+        }
+      }
+    });
+
+    return Object.entries(ruleMap)
+      .filter(([_, stats]) => stats.missed > 0)
+      .sort((a, b) => b[1].missed - a[1].missed)
+      .slice(0, 4);
+  }, [questions, userAnswers]);
 
   return (
     <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-8 flex flex-col justify-center print:p-0 print:bg-white print:max-w-none">
@@ -209,6 +254,73 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Sub-Part Diagnostic Mastery Breakdown (if data available) */}
+      {subpartStats && subpartStats.length > 0 && (
+        <div className="p-6 rounded-2xl bg-[#10141e] border border-[#1e2638] text-xs space-y-4 mb-6 print:bg-white print:border-zinc-300">
+          <div className="flex items-center gap-2 font-bold text-zinc-100 text-sm print:text-black">
+            <Layers className="w-4 h-4 text-indigo-400" />
+            <span>Rincian Penguasaan Per-Bagian Sub-Materi (Sub-Part Mastery):</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {subpartStats.map((item, idx) => {
+              const pct = Math.round((item.correct / item.total) * 100);
+              return (
+                <div
+                  key={idx}
+                  className="p-3.5 rounded-xl bg-[#151b28] border border-[#1e2638] flex flex-col justify-between print:bg-zinc-50 print:border-zinc-300"
+                >
+                  <div className="text-[11px] font-semibold text-zinc-300 print:text-black">{item.label}</div>
+                  <div className="mt-2.5">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="text-zinc-500 font-mono">
+                        {item.correct} / {item.total}
+                      </span>
+                      <span className={`font-mono font-bold ${pct >= 70 ? 'text-emerald-400' : pct >= 50 ? 'text-amber-400' : 'text-rose-400'}`}>
+                        {pct}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-[#10141e] h-1.5 rounded-full overflow-hidden print:bg-zinc-200">
+                      <div
+                        className={`h-full rounded-full ${pct >= 70 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Grammatical Priority Focus */}
+      {ruleWeaknesses.length > 0 && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#10141e] border border-amber-500/20 text-xs mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="font-bold text-zinc-100 text-sm">Fokus Latihan Gramatikal Terpenting:</div>
+              <p className="text-zinc-400 text-xs mt-0.5">
+                Topik tata bahasa dengan kekeliruan terbanyak pada pengerjaan Anda:
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {ruleWeaknesses.map(([cat, stats], i) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 rounded-lg bg-[#151b28] border border-amber-500/30 text-amber-300 text-[11px] font-mono"
+              >
+                {cat} ({stats.missed} salah)
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Actionable Diagnostic Guidance */}
       <div className="p-6 rounded-2xl bg-[#10141e] border border-[#1e2638] text-xs space-y-4 mb-8 print:bg-white print:border-zinc-300">

@@ -170,4 +170,39 @@ describe('ExamView Component & User Interaction Flow', () => {
 
     expect(onNavigateIndex).toHaveBeenCalledWith(1);
   });
+
+  it('handles keyboard shortcuts for option selection and navigation', () => {
+    render(
+      <ExamView
+        mode="exam"
+        examStep={1}
+        questions={mockQuestions}
+        currentIndex={0}
+        userAnswers={{}}
+        flagged={{}}
+        onSelectOption={onSelectOption}
+        onToggleFlag={onToggleFlag}
+        onNavigateIndex={onNavigateIndex}
+        onNextStepClick={onNextStepClick}
+        onOpenDirections={onOpenDirections}
+        getSectionTitle={getSectionTitle}
+      />
+    );
+
+    // Press 'A' key
+    fireEvent.keyDown(window, { key: 'a' });
+    expect(onSelectOption).toHaveBeenCalledWith('A');
+
+    // Press '2' key (Option B)
+    fireEvent.keyDown(window, { key: '2' });
+    expect(onSelectOption).toHaveBeenCalledWith('B');
+
+    // Press 'ArrowRight'
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    expect(onNavigateIndex).toHaveBeenCalledWith(1);
+
+    // Press 'F' key
+    fireEvent.keyDown(window, { key: 'f' });
+    expect(onToggleFlag).toHaveBeenCalled();
+  });
 });

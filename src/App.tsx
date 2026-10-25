@@ -58,8 +58,12 @@ export default function App() {
   const [customBank, setCustomBank] = useState<Question[]>([]);
 
   // Accessibility & UI Controls
-  const [fontSize, setFontSize] = useState<"normal" | "large">("normal");
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [fontSize, setFontSize] = useState<"normal" | "large">(() => {
+    return sessionStore.loadSettings().fontSize;
+  });
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
+    return sessionStore.loadSettings().soundEnabled;
+  });
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Initial load from local storage
@@ -268,6 +272,13 @@ export default function App() {
     const next = !soundEnabled;
     setSoundEnabled(next);
     sounds.enabled = next;
+    sessionStore.saveSettings({ soundEnabled: next, fontSize });
+  };
+
+  const toggleFontSize = () => {
+    const next = fontSize === "normal" ? "large" : "normal";
+    setFontSize(next);
+    sessionStore.saveSettings({ soundEnabled, fontSize: next });
   };
 
   const getSectionTitle = useCallback((sec: SectionId) => {
@@ -395,7 +406,7 @@ export default function App() {
           <div className="flex items-center gap-1 bg-[#10141e] p-1 rounded-xl border border-[#1e2638] text-xs">
             <button
               type="button"
-              onClick={() => setFontSize(f => (f === "normal" ? "large" : "normal"))}
+              onClick={toggleFontSize}
               className="p-1.5 rounded-lg hover:bg-[#151b28] text-zinc-400 hover:text-zinc-100 transition-colors"
               title="Perbesar Ukuran Teks"
               aria-label="Ubah ukuran teks"
@@ -498,6 +509,8 @@ export default function App() {
       {view === "results" && scoreReport && (
         <ResultsView
           score={scoreReport}
+          questions={activeQuestions}
+          userAnswers={userAnswers}
           onReview={() => {
             setView("review");
             setCurrentIndex(0);
