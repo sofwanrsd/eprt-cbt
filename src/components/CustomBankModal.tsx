@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileCode, CheckCircle2, X, AlertCircle, Database, Trash2, HelpCircle } from 'lucide-react';
+import { FileCode, CheckCircle2, X, AlertCircle, Database, Trash2, HelpCircle } from 'lucide-react';
 import { Question } from '../types';
 import { validateQuestionBank } from '../utils/questionValidator';
 import { sessionStore } from '../utils/sessionStorage';
@@ -63,7 +63,7 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
 
         const res = validateQuestionBank(listToValidate);
         const sampleErrors = res.errors.slice(0, 5).map(
-          e => `Item #${e.index + 1}: ${e.errors.join('; ')}`
+          item => `Item #${item.index + 1}: ${item.errors.join('; ')}`
         );
 
         setValidationSummary({
@@ -111,36 +111,45 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-[#10121d] border border-zinc-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+    <div
+      className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="custom-bank-title"
+    >
+      <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative my-8">
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-xl text-zinc-400 hover:text-zinc-100 hover:bg-[#151b28] transition-colors"
           aria-label="Tutup modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3.5 mb-5">
-          <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 shrink-0">
-            <Database className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+            <Database className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-zinc-100">Manajer Bank Soal Kustom</h3>
+            <h3 id="custom-bank-title" className="text-base font-bold text-zinc-100">
+              Manajer Bank Soal Kustom
+            </h3>
             <p className="text-xs text-zinc-400 mt-0.5">
-              Impor dan kelola soal latihan tambahan (tersimpan lokal di browser Anda)
+              Impor berkas JSON soal latihan tambahan ke penyimpanan lokal browser Anda.
             </p>
           </div>
         </div>
 
         {/* Existing bank status */}
-        <div className="p-3.5 rounded-2xl bg-zinc-900/60 border border-zinc-800 flex items-center justify-between mb-5 text-xs">
+        <div className="p-3.5 rounded-xl bg-[#151b28] border border-[#1e2638] flex items-center justify-between mb-5 text-xs">
           <div>
             <span className="text-zinc-400">Soal Kustom Tersimpan:</span>
-            <span className="font-bold text-zinc-100 ml-1.5">{customQuestions.length} butir</span>
+            <span className="font-bold text-zinc-100 ml-1.5 font-mono">{customQuestions.length} butir</span>
           </div>
           {customQuestions.length > 0 && (
             <button
+              type="button"
               onClick={handleClearCustomBank}
               className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1 transition-colors"
             >
@@ -151,10 +160,10 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
         </div>
 
         {/* Upload Dropzone */}
-        <div className="border-2 border-dashed border-zinc-800 hover:border-zinc-700 rounded-2xl p-6 text-center transition-colors mb-4">
-          <FileCode className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
-          <p className="text-sm text-zinc-300 font-medium">Pilih Berkas JSON Bank Soal</p>
-          <p className="text-xs text-zinc-500 mt-1">Format JSON standar EPrT / CeLOE Practice</p>
+        <div className="border border-dashed border-[#232d42] hover:border-indigo-500/50 rounded-2xl p-6 text-center transition-colors mb-4 bg-[#121622]/50">
+          <FileCode className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
+          <p className="text-sm text-zinc-200 font-medium">Pilih Berkas JSON Bank Soal</p>
+          <p className="text-xs text-zinc-500 mt-1">Format JSON baku TOEFL ITP / EPrT Practice</p>
           <input
             type="file"
             accept=".json"
@@ -164,7 +173,7 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
           />
           <label
             htmlFor="custom-bank-file-upload"
-            className="inline-block mt-3 px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 cursor-pointer transition-colors"
+            className="inline-block mt-3 px-4 py-2 rounded-xl bg-[#1e2638] hover:bg-[#253046] text-xs font-semibold text-zinc-200 cursor-pointer transition-colors"
           >
             Pilih Berkas (.json)
           </label>
@@ -172,30 +181,30 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
 
         {/* Validation Summary Card */}
         {validationSummary && (
-          <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 mb-4 text-xs space-y-3">
+          <div className="p-4 rounded-xl bg-[#151b28] border border-[#1e2638] mb-4 text-xs space-y-3">
             <div className="flex items-center justify-between font-bold text-zinc-200">
               <span>Hasil Validasi Format Berkas:</span>
-              <span className="text-emerald-400">{validationSummary.validCount} Valid</span>
+              <span className="text-emerald-400 font-mono">{validationSummary.validCount} Valid</span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
-              <div className="p-2 rounded-xl bg-zinc-950 border border-zinc-800">
+              <div className="p-2 rounded-xl bg-[#10141e] border border-[#1e2638]">
                 <div className="text-zinc-400">Siap Impor</div>
-                <div className="text-emerald-400 font-bold mt-0.5">{validationSummary.validCount}</div>
+                <div className="text-emerald-400 font-bold font-mono mt-0.5">{validationSummary.validCount}</div>
               </div>
-              <div className="p-2 rounded-xl bg-zinc-950 border border-zinc-800">
+              <div className="p-2 rounded-xl bg-[#10141e] border border-[#1e2638]">
                 <div className="text-zinc-400">Format Keliru</div>
-                <div className="text-rose-400 font-bold mt-0.5">{validationSummary.invalidCount}</div>
+                <div className="text-rose-400 font-bold font-mono mt-0.5">{validationSummary.invalidCount}</div>
               </div>
-              <div className="p-2 rounded-xl bg-zinc-950 border border-zinc-800">
+              <div className="p-2 rounded-xl bg-[#10141e] border border-[#1e2638]">
                 <div className="text-zinc-400">Duplikasi</div>
-                <div className="text-amber-400 font-bold mt-0.5">{validationSummary.duplicateCount}</div>
+                <div className="text-amber-400 font-bold font-mono mt-0.5">{validationSummary.duplicateCount}</div>
               </div>
             </div>
 
             {validationSummary.errors.length > 0 && (
               <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 space-y-1 text-[11px]">
-                <div className="font-bold">Contoh Kesalahan:</div>
+                <div className="font-semibold">Catatan Validasi:</div>
                 {validationSummary.errors.map((err, i) => (
                   <div key={i} className="truncate">{err}</div>
                 ))}
@@ -203,9 +212,10 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
             )}
 
             <button
+              type="button"
               disabled={validationSummary.validCount === 0}
               onClick={handleCommitImport}
-              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 disabled:opacity-40 text-white font-bold text-xs transition-all shadow-md shadow-rose-500/20"
+              className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-semibold text-xs transition-colors shadow-sm"
             >
               Simpan {validationSummary.validCount} Soal ke Bank Latihan
             </button>
@@ -233,7 +243,7 @@ export const CustomBankModal: React.FC<CustomBankModalProps> = ({
         <div className="pt-2 text-[11px] text-zinc-500 leading-relaxed flex items-start gap-1.5">
           <HelpCircle className="w-3.5 h-3.5 shrink-0 text-zinc-400 mt-0.5" />
           <span>
-            Soal yang diimpor hanya disimpan pada memori lokal peramban perangkat Anda (localStorage) dan tidak dikirimkan ke server publik.
+            Soal yang diimpor tersimpan secara aman di peramban lokal perangkat Anda (localStorage) tanpa transmisi ke server eksternal.
           </span>
         </div>
       </div>

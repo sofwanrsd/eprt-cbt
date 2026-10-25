@@ -16,10 +16,11 @@
  ✓ src/test/sessionStorage.test.ts (3 tests)
  ✓ src/test/ExamFlow.test.tsx (5 tests)
  ✓ src/test/CustomBankModal.test.tsx (3 tests)
+ ✓ src/test/ResultsView.test.tsx (3 tests)
 
- Test Files  5 passed (5)
-      Tests  21 passed (21)
-   Duration  2.33s
+ Test Files  6 passed (6)
+      Tests  24 passed (24)
+   Duration  2.27s
 ```
 
 ---
@@ -67,6 +68,13 @@
 | `does not render when isOpen is false` | Verifies clean unmounting when inactive. | PASS |
 | `calls onClose when close button is clicked` | Confirms modal dismissal callback. | PASS |
 
+### F. Dedicated Results Analytics Dashboard (`src/test/ResultsView.test.tsx`)
+| Test Case | Description | Result |
+|---|---|---|
+| `renders overall score, section scores, and passing status` | Validates score hero display, section progress bars, and passing status indicators. | PASS |
+| `invokes onReview when review button is clicked` | Confirms transition into review mode with answer keys and explanations. | PASS |
+| `invokes onReturnToLobby when dashboard button is clicked` | Verifies navigation back to main student study dashboard. | PASS |
+
 ---
 
 ## 3. Build & Static Analysis Verification
@@ -74,9 +82,9 @@
 ```bash
 $ bun run typecheck
 $ tsc --noEmit
-# Result: 0 errors
+# Result: 0 errors across entire codebase
 
 $ bun run build
 $ tsc && vite build
-# Result: Production build successfully generated in /dist/
+# Result: Production bundle successfully built in /dist/
 ```

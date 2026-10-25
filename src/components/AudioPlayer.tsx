@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Headphones, AlertCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, Headphones, AlertCircle, Volume2 } from 'lucide-react';
 
 interface AudioPlayerProps {
   speakerText?: string[];
   audioUrl?: string;
-  autoPlay?: boolean;
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
@@ -60,9 +59,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const femaleVoice = usVoices.find(v => /female|samantha|zira|victoria|karen/i.test(v.name)) || usVoices[0];
     const maleVoice = usVoices.find(v => /male|david|alex|george|daniel/i.test(v.name)) || usVoices[1] || usVoices[0];
 
-    // Build queued utterances per speaker turn
     const utterances: SpeechSynthesisUtterance[] = speakerText.map((turnText, idx) => {
-      // Strip speaker prefix for clean reading
       const isWoman = /^woman/i.test(turnText);
       const isMan = /^man/i.test(turnText);
       const isProfessor = /^professor/i.test(turnText);
@@ -72,7 +69,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       utt.lang = 'en-US';
       utt.rate = speechRate;
 
-      // Assign voice based on character
       if (isWoman && femaleVoice) {
         utt.voice = femaleVoice;
         utt.pitch = 1.1;
@@ -86,7 +82,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         utt.voice = femaleVoice;
       }
 
-      // Chain onto next utterance
       utt.onerror = () => {
         setIsPlaying(false);
       };
@@ -103,14 +98,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     utteranceQueueRef.current = utterances;
     setIsPlaying(true);
 
-    // Speak sequentially
     utterances.forEach(u => window.speechSynthesis.speak(u));
   }, [speakerText, speechRate]);
 
   const togglePlay = () => {
     setErrorMessage(null);
 
-    // If using audio file and not in speech fallback
     if (audioUrl && !useSpeechFallback) {
       if (!audioRef.current) return;
       if (isPlaying) {
@@ -124,7 +117,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               setIsPlaying(true);
             })
             .catch(() => {
-              // Audio file failed (404, CORS, or blocked) -> Gracefully fall back to Speech Synthesis
               setUseSpeechFallback(true);
               playSpeechSynthesis();
             });
@@ -133,7 +125,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       return;
     }
 
-    // Speech Synthesis mode
     if (isPlaying) {
       stopAllAudio();
     } else {
@@ -156,89 +147,81 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   };
 
   return (
-    <div className="bg-[#10121d] border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg relative overflow-hidden">
-      {/* Background audio glow effect */}
-      {isPlaying && (
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/5 to-transparent pointer-events-none animate-pulse" />
-      )}
-
+    <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
       {audioUrl && !useSpeechFallback && (
         <audio
           ref={audioRef}
           src={audioUrl}
           onEnded={() => setIsPlaying(false)}
           onError={() => {
-            // Graceful fallback to TTS on audio load error
             setUseSpeechFallback(true);
           }}
         />
       )}
 
-      <div className="flex items-center gap-3.5 w-full sm:w-auto relative">
+      <div className="flex items-center gap-3.5 w-full sm:w-auto">
         <div
-          className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all ${
+          className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors ${
             isPlaying
-              ? 'bg-rose-500/20 border-rose-500/40 text-rose-400 shadow-lg shadow-rose-500/20'
-              : 'bg-zinc-900 border-zinc-800 text-zinc-400'
+              ? 'bg-indigo-500/15 border-indigo-500/30 text-indigo-400'
+              : 'bg-[#151b28] border-[#1e2638] text-zinc-400'
           }`}
         >
           <Headphones className="w-5 h-5" />
         </div>
 
         <div>
-          <div className="text-sm font-bold text-zinc-100 flex items-center gap-2">
-            <span>Audio Percakapan Listening</span>
+          <div className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+            <span>Listening Audio Dialogue</span>
             {isPlaying && (
-              <div className="flex items-center gap-0.5 ml-1" aria-label="Audio sedang diputar">
-                <span className="w-1 h-3.5 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1 h-5 bg-rose-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1 h-2.5 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-              </div>
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium">
+                Playing
+              </span>
             )}
           </div>
           <div className="text-xs text-zinc-400 mt-0.5">
             {audioUrl && !useSpeechFallback
-              ? 'Audio Sumber Langsung'
-              : 'Speech Synthesis Dialog Bahasa Inggris (Multi-Speaker)'}
+              ? 'Direct Audio Track'
+              : 'Multi-Speaker Speech Synthesis (American English)'}
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 w-full sm:w-auto justify-end relative">
+      <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
         <button
           type="button"
           onClick={togglePlay}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
             isPlaying
-              ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30'
-              : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-100'
+              ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
+              : 'bg-[#151b28] hover:bg-[#1a2233] border border-[#1e2638] text-zinc-200'
           }`}
-          aria-label={isPlaying ? 'Jeda Audio' : 'Putar Audio'}
+          aria-label={isPlaying ? 'Pause Audio' : 'Play Audio'}
         >
-          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
-          <span>{isPlaying ? 'Jeda' : 'Putar Audio'}</span>
+          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+          <span>{isPlaying ? 'Pause' : 'Play Dialogue'}</span>
         </button>
 
         <button
           type="button"
           onClick={restartAudio}
-          className="p-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 transition-colors"
-          title="Ulangi dari Awal"
-          aria-label="Ulangi audio dari awal"
+          className="p-2 rounded-xl bg-[#151b28] hover:bg-[#1a2233] border border-[#1e2638] text-zinc-400 hover:text-zinc-200 transition-colors"
+          title="Restart Audio"
+          aria-label="Restart audio from beginning"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
 
         <select
           value={speechRate}
           onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-          className="bg-zinc-900 border border-zinc-800 text-xs rounded-xl px-2.5 py-2.5 text-zinc-300 focus:outline-none focus:border-rose-500 cursor-pointer"
-          title="Kecepatan Bicara"
-          aria-label="Pilih kecepatan audio"
+          className="bg-[#151b28] border border-[#1e2638] text-xs rounded-xl px-2.5 py-2 text-zinc-300 focus:outline-none focus:border-indigo-500 cursor-pointer"
+          title="Playback Speed"
+          aria-label="Select playback speed"
         >
           <option value="0.85">0.85x</option>
           <option value="0.95">1.0x (Normal)</option>
-          <option value="1.1">1.1x</option>
+          <option value="1.1">1.15x</option>
         </select>
       </div>
 

@@ -4,6 +4,36 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [2.1.0] - 2026-10-25 (Ultimate UI/UX Overhaul & Design System)
+
+### Design System & Visual Overhaul
+- **Disciplined Dark Color Palette:** Replaced harsh crimson/magenta gradients and fragmented styling with an intentional palette: `#090C13` canvas, `#10141E` surface, `#151B28` elevated surface, `#1E2638` subtle borders, and `#6366F1` electric indigo primary accent.
+- **Academic Typography:** Enforced clear typographic hierarchy with Plus Jakarta Sans & Inter, high contrast headings, generous line-height for reading passages, and minimum practical label sizing (no tiny 10px text for critical labels).
+- **Zero Decorative Emojis:** 100% clean SVG Lucide icons across every screen and component.
+
+### Application Shell & Dashboard
+- **Structured SaaS Shell:** Redesigned header with geometric branding, active mode status pills, sound and font size toggles, and direct links to Dashboard, Simulation, and Custom Banks.
+- **Hero & Study Overview:** Built high-impact hero ("Prepare Smarter. Score Higher.") paired with real study metrics: Target Score (450+), Latest Simulation Score, Completed Sessions, and Verified Question Bank counter (610 items).
+- **Linear-Style Practice Modules:** Redesigned 3 cohesive module cards (Listening, Structure, Reading) with equal visual rhythm, question counts, and direct action triggers.
+- **Dynamic Recent Activity:** Displays actual previous attempts from local storage with pass/fail indicators and clear history controls.
+
+### Examination Interface
+- **Desktop Two-Column Asymmetric Layout:** Positioned question container on the left (~65–70% width) and sticky question palette on the right (~30–35% width). Eliminated vertical stacking below the question.
+- **Accessible Answer Choice Targets:** Full-width rounded cards (`min-h-[56px]`) with distinct `A`, `B`, `C`, `D` badges, prominent indigo selected state with ring, and accessible hover feedback.
+- **Truthful Listening Audio Player:** Clean pill container without fake bouncing audio visualizers; supports multi-speaker speech synthesis with role-differentiated voices, replay button, and playback rate dropdown (`0.85x`, `1.0x`, `1.15x`).
+- **Interactive Error Identification (Structure Part B):** Clickable underlined phrases directly within sentences with instant mutual highlighting between inline words and answer choices.
+- **Reading Split-Screen Experience:** 50:50 independent split-view with inline paragraph tags (`P1`, `P2`, `P3`), comfortable line length, and bottom quick-jump question row.
+- **Mobile Responsive Reading:** Added intentional tabbed view on mobile (`[Wacana Bacaan]` / `[Jawab Soal]`) to prevent cramped side-by-side columns on small viewports.
+
+### Results & Review Mode
+- **Dedicated Results Analytics Page (`src/features/results/ResultsView.tsx`):** Replaced cramped modal popup with full-page analytics dashboard displaying scaled score (310–677), section breakdowns, visual progress bars, personalized diagnostic strengths/weaknesses, and print-ready PDF stylesheet.
+- **Polished Review Interface:** Filter questions by section or incorrect-only, with clear answer comparison (emerald for key, rose for user choice) and grammar rule formulas.
+
+### Automated Testing & Quality
+- **Expanded Test Suite:** Added `src/test/ResultsView.test.tsx` bringing the test suite to 24 tests across 6 files (100% PASS).
+
+---
+
 ## [2.0.0] - 2026-10-25 (Production Hardened Release)
 
 ### Security & Integrity
