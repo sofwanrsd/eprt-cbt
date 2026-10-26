@@ -15,7 +15,7 @@ export interface ActiveSessionData {
   answers: Record<number, 'A' | 'B' | 'C' | 'D'>;
   flagged: Record<number, boolean>;
   currentIndex: number;
-  bankSource: 'official' | 'celoe' | 'custom';
+  bankSource: 'official' | 'celoe' | 'custom' | 'incorrect';
   isCompleted?: boolean;
 }
 

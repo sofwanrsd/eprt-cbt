@@ -41,7 +41,8 @@ export default function App() {
   const [view, setView] = useState<AppView>("lobby");
   const [examStep, setExamStep] = useState<1 | 2 | 3>(1); // 1: Listening, 2: Structure, 3: Reading
   const [practiceSection, setPracticeSection] = useState<SectionId>("listening");
-  const [bankSource, setBankSource] = useState<"official" | "celoe" | "custom">("official");
+  const [bankSource, setBankSource] = useState<"official" | "celoe" | "custom" | "incorrect">("official");
+  const [incorrectBank, setIncorrectBank] = useState<Question[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Record<number, "A" | "B" | "C" | "D">>({});
@@ -103,6 +104,10 @@ export default function App() {
 
   // Compute active question bank
   const activeQuestions = useMemo(() => {
+    if (bankSource === "incorrect") {
+      return incorrectBank;
+    }
+
     let rawBank = OFFICIAL_SIMULATION_QUESTIONS;
     if (bankSource === "celoe") {
       rawBank = CELOE_QUESTIONS;
@@ -125,7 +130,7 @@ export default function App() {
     }
 
     return OFFICIAL_SIMULATION_QUESTIONS;
-  }, [view, examStep, practiceSection, bankSource, customBank]);
+  }, [view, examStep, practiceSection, bankSource, customBank, incorrectBank]);
 
   const currentQ = activeQuestions[currentIndex] || activeQuestions[0];
 
@@ -206,8 +211,12 @@ export default function App() {
 
   // Handle Section Transitions
   const handleNextStepClick = useCallback(() => {
+    if (view === "practice") {
+      setView("lobby");
+      return;
+    }
     setShowTransitionModal(true);
-  }, []);
+  }, [view]);
 
   const finishFullExam = useCallback(() => {
     let rawL = 0;
@@ -239,6 +248,22 @@ export default function App() {
 
     sounds.playCompletionFanfare();
   }, [userAnswers, refreshHistory]);
+
+  const handlePracticeIncorrect = useCallback(() => {
+    const incorrectQs = OFFICIAL_SIMULATION_QUESTIONS.filter(
+      (q) => userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.correctAnswer
+    );
+    if (incorrectQs.length === 0) return;
+    setIncorrectBank(incorrectQs);
+    setBankSource("incorrect");
+    setCurrentIndex(0);
+    const freshAnswers = { ...userAnswers };
+    for (const q of incorrectQs) {
+      delete freshAnswers[q.id];
+    }
+    setUserAnswers(freshAnswers);
+    setView("practice");
+  }, [userAnswers]);
 
   const confirmStepTransition = useCallback(() => {
     setShowTransitionModal(false);
@@ -539,16 +564,18 @@ export default function App() {
         <ReviewView
           questions={OFFICIAL_SIMULATION_QUESTIONS}
           userAnswers={userAnswers}
+          flagged={flagged}
           scoreReport={scoreReport}
           onReturnToLobby={() => setView("lobby")}
           onRetry={startOfficialSimulation}
+          onPracticeIncorrect={handlePracticeIncorrect}
         />
       )}
 
       {view === "results" && scoreReport && (
         <ResultsView
           score={scoreReport}
-          questions={activeQuestions}
+          questions={OFFICIAL_SIMULATION_QUESTIONS}
           userAnswers={userAnswers}
           onReview={() => {
             setView("review");
@@ -556,6 +583,7 @@ export default function App() {
           }}
           onRetry={startOfficialSimulation}
           onReturnToLobby={() => setView("lobby")}
+          onPracticeIncorrect={handlePracticeIncorrect}
         />
       )}
 

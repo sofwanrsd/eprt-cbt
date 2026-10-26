@@ -2,19 +2,22 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Question, SectionId } from '../../types';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import {
-  Flag,
+  Clock,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  ArrowRight,
-  FileText,
-  HelpCircle,
+  Flag,
   Layers,
+  HelpCircle,
+  FileText,
   BookOpen,
-  Keyboard,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
   X,
-  Check,
-  Bookmark
+  Volume2,
+  Highlighter,
+  Keyboard,
+  Sparkles
 } from 'lucide-react';
 
 interface ExamViewProps {
@@ -262,12 +265,17 @@ export const ExamView: React.FC<ExamViewProps> = ({
                       <FileText className="w-4 h-4" />
                       <span>Reading Passage</span>
                     </div>
-                    <span className="text-[11px] text-slate-400 dark:text-zinc-500 font-mono">Independent Scroll</span>
+                    <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-zinc-500 font-mono">
+                      <span className="hidden sm:inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-500/20 font-sans text-[10px] font-semibold">
+                        <Highlighter className="w-3 h-3 text-amber-600" /> Highlighter Aktif
+                      </span>
+                      <span>Independent Scroll</span>
+                    </div>
                   </div>
 
                   <div
                     ref={passageScrollRef}
-                    className="flex-1 overflow-y-auto pr-3 text-slate-800 dark:text-zinc-200 leading-relaxed font-serif text-sm sm:text-base space-y-4 smooth-scroll select-text"
+                    className="flex-1 overflow-y-auto pr-3 text-slate-800 dark:text-zinc-200 leading-relaxed font-serif text-sm sm:text-base space-y-4 smooth-scroll select-text selection:bg-amber-200 selection:text-amber-950 dark:selection:bg-amber-400/40 dark:selection:text-amber-100"
                   >
                     {currentQ.passage.split('\n\n').map((paragraph, pIdx) => (
                       <div key={pIdx} className="relative pl-8">
@@ -582,14 +590,20 @@ export const ExamView: React.FC<ExamViewProps> = ({
         </div>
 
         {/* Right Action: Next or Finish Section */}
-        {mode === 'exam' && currentIndex === questions.length - 1 ? (
+        {currentIndex === questions.length - 1 ? (
           <button
             type="button"
             onClick={onNextStepClick}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0"
+            className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0 ${
+              mode === 'practice' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           >
-            <span className="hidden sm:inline">{examStep === 3 ? 'Kumpulkan Ujian' : `Selesai Section ${examStep}`}</span>
-            <span className="sm:hidden">{examStep === 3 ? 'Kumpulkan' : 'Selesai'}</span>
+            <span className="hidden sm:inline">
+              {mode === 'practice' ? 'Selesai Latihan' : examStep === 3 ? 'Kumpulkan Ujian' : `Selesai Section ${examStep}`}
+            </span>
+            <span className="sm:hidden">
+              {mode === 'practice' ? 'Selesai' : examStep === 3 ? 'Kumpulkan' : 'Selesai'}
+            </span>
             <ArrowRight className="w-4 h-4" />
           </button>
         ) : (

@@ -12,37 +12,51 @@ import {
   Filter,
   Layers,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Flag
 } from 'lucide-react';
 import { AudioPlayer } from '../../components/AudioPlayer';
 
 interface ReviewViewProps {
   questions: Question[];
   userAnswers: Record<number, 'A' | 'B' | 'C' | 'D'>;
+  flagged?: Record<number, boolean>;
   scoreReport: ScoreReport | null;
   onReturnToLobby: () => void;
   onRetry: () => void;
+  onPracticeIncorrect?: () => void;
 }
 
 export const ReviewView: React.FC<ReviewViewProps> = ({
   questions,
   userAnswers,
+  flagged = {},
   scoreReport,
   onReturnToLobby,
   onRetry,
+  onPracticeIncorrect,
 }) => {
   const [filterSection, setFilterSection] = useState<SectionId | 'all'>('all');
-  const [filterIncorrectOnly, setFilterIncorrectOnly] = useState(false);
+  const [filterMode, setFilterMode] = useState<'all' | 'incorrect' | 'flagged'>('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTranscript, setShowTranscript] = useState(false);
+
+  const incorrectCount = useMemo(() => {
+    return questions.filter((q) => userAnswers[q.id] !== q.correctAnswer).length;
+  }, [questions, userAnswers]);
+
+  const flaggedCount = useMemo(() => {
+    return questions.filter((q) => flagged[q.id]).length;
+  }, [questions, flagged]);
 
   const filteredQuestions = useMemo(() => {
     return questions.filter((q) => {
       if (filterSection !== 'all' && q.section !== filterSection) return false;
-      if (filterIncorrectOnly && userAnswers[q.id] === q.correctAnswer) return false;
+      if (filterMode === 'incorrect' && userAnswers[q.id] === q.correctAnswer) return false;
+      if (filterMode === 'flagged' && !flagged[q.id]) return false;
       return true;
     });
-  }, [questions, filterSection, filterIncorrectOnly, userAnswers]);
+  }, [questions, filterSection, filterMode, userAnswers, flagged]);
 
   const currentQ = filteredQuestions[currentIndex] || filteredQuestions[0];
   const isCorrect = currentQ ? userAnswers[currentQ.id] === currentQ.correctAnswer : false;
@@ -102,19 +116,47 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => { setFilterIncorrectOnly(!filterIncorrectOnly); setCurrentIndex(0); }}
+            onClick={() => { setFilterMode(filterMode === 'incorrect' ? 'all' : 'incorrect'); setCurrentIndex(0); }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border cursor-pointer ${
-              filterIncorrectOnly
+              filterMode === 'incorrect'
                 ? 'bg-red-50 text-red-700 border-red-300 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30'
                 : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-rose-400" />
-            <span>Salah Saja</span>
+            <span>Salah Saja ({incorrectCount})</span>
           </button>
+
+          {flaggedCount > 0 && (
+            <button
+              type="button"
+              onClick={() => { setFilterMode(filterMode === 'flagged' ? 'all' : 'flagged'); setCurrentIndex(0); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border cursor-pointer ${
+                filterMode === 'flagged'
+                  ? 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
+                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
+              }`}
+            >
+              <Flag className="w-3.5 h-3.5 text-amber-500" />
+              <span>Ragu ({flaggedCount})</span>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
+          {incorrectCount > 0 && onPracticeIncorrect && (
+            <button
+              type="button"
+              onClick={onPracticeIncorrect}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+              title="Latih hanya soal yang belum benar"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Latih Soal Salah</span>
+              <span className="sm:hidden">Latih Salah</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onRetry}

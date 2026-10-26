@@ -26,6 +26,7 @@ interface ResultsViewProps {
   onReview: () => void;
   onRetry: () => void;
   onReturnToLobby: () => void;
+  onPracticeIncorrect?: () => void;
 }
 
 export const ResultsView: React.FC<ResultsViewProps> = ({
@@ -35,6 +36,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
   onReview,
   onRetry,
   onReturnToLobby,
+  onPracticeIncorrect,
 }) => {
   const handlePrint = () => {
     window.print();
@@ -91,6 +93,24 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
 
   return (
     <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-8 flex flex-col justify-center print:p-0 print:bg-white print:max-w-none text-slate-900 dark:text-zinc-100">
+      {/* Official Institutional Print Header */}
+      <div className="hidden print:block mb-6 pb-4 border-b-2 border-slate-800">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-lg font-black tracking-tight text-slate-900 uppercase font-mono">
+              Telkom University — Language Center (LaC)
+            </div>
+            <div className="text-xs text-slate-600 font-medium">
+              English Proficiency Test (EPrT) — Official Diagnostic Evaluation Report
+            </div>
+          </div>
+          <div className="text-right text-[10px] text-slate-500 font-mono">
+            <div>Standar ETS: 310 - 677</div>
+            <div>Tanggal: {new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+          </div>
+        </div>
+      </div>
+
       {/* Action Header (Excluded from Print) */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-[#1E2638] print:hidden">
         <div>
@@ -372,6 +392,18 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           <Eye className="w-4 h-4" />
           <span>Review Pembahasan Soal & Kunci</span>
         </button>
+
+        {incorrectCount > 0 && onPracticeIncorrect && (
+          <button
+            type="button"
+            onClick={onPracticeIncorrect}
+            className="py-3 px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            title="Latih hanya soal yang salah"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Latih Ulang {incorrectCount} Soal Salah</span>
+          </button>
+        )}
 
         <button
           type="button"
