@@ -9,6 +9,8 @@ import { ResultsView } from "./features/results/ResultsView";
 import { SectionTransitionModal } from "./components/SectionTransitionModal";
 import { OfficialDirectionsModal } from "./components/OfficialDirectionsModal";
 import { CustomBankModal } from "./components/CustomBankModal";
+import { AudioCalibrationModal } from "./components/AudioCalibrationModal";
+import { GrammarRulesModal } from "./components/GrammarRulesModal";
 import { ExamTimer } from "./components/ExamTimer";
 import { sounds } from "./utils/soundEffects";
 import {
@@ -57,6 +59,8 @@ export default function App() {
   const [showCustomBankModal, setShowCustomBankModal] = useState(false);
   const [showTransitionModal, setShowTransitionModal] = useState(false);
   const [showDirectionsModal, setShowDirectionsModal] = useState(false);
+  const [showAudioCalibrationModal, setShowAudioCalibrationModal] = useState(false);
+  const [showGrammarRulesModal, setShowGrammarRulesModal] = useState(false);
 
   // Local storage state
   const [activeSavedSession, setActiveSavedSession] = useState<ActiveSessionData | null>(null);
@@ -374,7 +378,7 @@ export default function App() {
             </button>
             <button
               type="button"
-              onClick={startOfficialSimulation}
+              onClick={() => setShowAudioCalibrationModal(true)}
               className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Simulasi Penuh
@@ -385,6 +389,13 @@ export default function App() {
               className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Latihan Section
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowGrammarRulesModal(true)}
+              className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              Kamus Grammar
             </button>
             <button
               type="button"
@@ -496,10 +507,11 @@ export default function App() {
           ========================================================================= */}
       {view === "lobby" && (
         <LobbyView
-          onStartExam={startOfficialSimulation}
+          onStartExam={() => setShowAudioCalibrationModal(true)}
           onStartPractice={startSectionPractice}
           onResumeSession={resumeSavedSession}
           onOpenCustomBank={() => setShowCustomBankModal(true)}
+          onOpenGrammarRules={() => setShowGrammarRulesModal(true)}
           activeSavedSession={activeSavedSession}
           history={history}
           onRefreshHistory={refreshHistory}
@@ -548,6 +560,20 @@ export default function App() {
       )}
 
       {/* Global Modals */}
+      <AudioCalibrationModal
+        isOpen={showAudioCalibrationModal}
+        onClose={() => setShowAudioCalibrationModal(false)}
+        onProceed={() => {
+          setShowAudioCalibrationModal(false);
+          startOfficialSimulation();
+        }}
+      />
+
+      <GrammarRulesModal
+        isOpen={showGrammarRulesModal}
+        onClose={() => setShowGrammarRulesModal(false)}
+      />
+
       <SectionTransitionModal
         isOpen={showTransitionModal}
         currentStep={examStep}

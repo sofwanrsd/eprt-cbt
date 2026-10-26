@@ -1,6 +1,6 @@
 # EPrT CBT Simulator & Study Suite — Test Suite Verification Report
 
-**Date:** October 25, 2026  
+**Date:** October 26, 2026  
 **Test Framework:** Vitest v5.0.5 + React Testing Library v16.3.3 + JSDOM v30.1.3  
 **Status:** ALL TESTS PASSING (100% Success Rate)
 
@@ -17,10 +17,12 @@
  ✓ src/test/ExamFlow.test.tsx (6 tests)
  ✓ src/test/CustomBankModal.test.tsx (3 tests)
  ✓ src/test/ResultsView.test.tsx (3 tests)
+ ✓ src/test/AudioCalibrationModal.test.tsx (3 tests)
+ ✓ src/test/GrammarRulesModal.test.tsx (4 tests)
 
- Test Files  6 passed (6)
-      Tests  27 passed (27)
-   Duration  2.35s
+ Test Files  8 passed (8)
+      Tests  34 passed (34)
+   Duration  2.91s
 ```
 
 ---
@@ -52,7 +54,7 @@
 | `clears session safely` | Confirms completed or discarded exams remove transient session data from localStorage. | PASS |
 | `records attempt history and limits to 20 recent attempts` | Ensures attempt history caps at 20 items to prevent unbounded storage growth. | PASS |
 | `exports and imports diagnostic history JSON correctly` | Confirms full roundtrip export of student diagnostic attempts and error-safe import. | PASS |
-| `persists and retrieves user accessibility settings` | Verifies persistent font size and sound effect preferences in localStorage. | PASS |
+| `persists and retrieves user accessibility settings` | Verifies persistent font size, sound effects, and light/dark theme in localStorage. | PASS |
 
 ### D. Exam User Interaction Flow (`src/test/ExamFlow.test.tsx`)
 | Test Case | Description | Result |
@@ -78,6 +80,21 @@
 | `invokes onReview when review button is clicked` | Confirms transition into review mode with answer keys and explanations. | PASS |
 | `invokes onReturnToLobby when dashboard button is clicked` | Verifies navigation back to main student study dashboard. | PASS |
 
+### G. Audio Calibration Pre-Test Modal (`src/test/AudioCalibrationModal.test.tsx`)
+| Test Case | Description | Result |
+|---|---|---|
+| `renders modal title and notice when open` | Confirms headset check UI and section 1 notice. | PASS |
+| `does not render when isOpen is false` | Verifies clean unmounting when inactive. | PASS |
+| `enables proceed button when checkbox is confirmed and invokes onProceed` | Confirms audio verification safety gate before timer starts. | PASS |
+
+### H. Grammar Rules Cheatsheet Modal (`src/test/GrammarRulesModal.test.tsx`)
+| Test Case | Description | Result |
+|---|---|---|
+| `renders modal title and rules list when open` | Confirms cheatsheet UI and rule list display. | PASS |
+| `does not render when isOpen is false` | Verifies clean unmounting when inactive. | PASS |
+| `filters rules when search query is entered` | Validates interactive search filter by topic keyword. | PASS |
+| `calls onClose when close button is clicked` | Confirms modal dismissal callback. | PASS |
+
 ---
 
 ## 3. Build & Static Analysis Verification
@@ -89,5 +106,5 @@ $ tsc --noEmit
 
 $ bun run build
 $ tsc && vite build
-# Result: Optimized chunks built in /dist/ (Main bundle reduced to 255 kB, CeLOE data split to 505 kB)
+# Result: Optimized chunks built in /dist/ (Main bundle 313 kB, CeLOE data 505 kB)
 ```

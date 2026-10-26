@@ -30,6 +30,7 @@ interface LobbyViewProps {
   onStartPractice: (sec: SectionId, source: 'official' | 'celoe') => void;
   onResumeSession: (session: ActiveSessionData) => void;
   onOpenCustomBank: () => void;
+  onOpenGrammarRules?: () => void;
   activeSavedSession: ActiveSessionData | null;
   history: CompletedExamRecord[];
   onRefreshHistory: () => void;
@@ -42,6 +43,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   onStartPractice,
   onResumeSession,
   onOpenCustomBank,
+  onOpenGrammarRules,
   activeSavedSession,
   history,
   onRefreshHistory,
@@ -201,6 +203,17 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
                 </span>
               )}
             </button>
+
+            {onOpenGrammarRules && (
+              <button
+                type="button"
+                onClick={onOpenGrammarRules}
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-[#121724] transition-all cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>Formula & Rumus Grammar</span>
+              </button>
+            )}
           </div>
 
           {/* Quick Direct Actions Group */}
