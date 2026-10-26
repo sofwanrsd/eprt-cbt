@@ -301,11 +301,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           ========================================================================= */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Mobile Navigation Bar Pills */}
-        <div className="lg:hidden flex items-center gap-1 p-3 border-b border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#0C1018] overflow-x-auto text-xs shrink-0">
+        <div className="lg:hidden flex items-center gap-1.5 p-2.5 sm:p-3 border-b border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#0C1018] overflow-x-auto text-xs shrink-0 max-w-full">
           <button
             type="button"
             onClick={() => setActiveTab('overview')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
               activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
@@ -314,7 +314,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('modules')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
               activeTab === 'modules' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
@@ -323,16 +323,16 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('analytics')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
               activeTab === 'analytics' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
-            Analitik
+            Analitik Topik
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('history')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
               activeTab === 'history' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
@@ -340,44 +340,44 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           </button>
         </div>
 
-        <main className="p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto flex flex-col gap-8">
+        <main className="p-3 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto flex flex-col gap-6 sm:gap-8">
           {/* Resume Incomplete Session Banner */}
           {activeSavedSession && !activeSavedSession.isCompleted && (
-            <div className="p-4 sm:p-5 rounded-xl bg-blue-50/70 border border-blue-200 dark:bg-[#121724] dark:border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <div className="p-3.5 sm:p-5 rounded-xl bg-blue-50/70 border border-blue-200 dark:bg-[#121724] dark:border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-100 border border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400 flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5 animate-pulse" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                    <span>Sesi Pre-Test Aktif Ditemukan</span>
-                    <span className="text-[11px] px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300 font-mono font-medium">
-                      Tahap {activeSavedSession.examStep} / 3
+                  <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+                    <span>Sesi Pre-Test Belum Selesai</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300 font-mono font-medium">
+                      Tahap {activeSavedSession.examStep}/3
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
-                    {Object.keys(activeSavedSession.answers).length} jawaban tersimpan aman. Lanjutkan ujian Anda tanpa kehilangan timer.
+                  <p className="text-[11px] sm:text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
+                    {Object.keys(activeSavedSession.answers).length} jawaban tersimpan. Lanjutkan ujian tanpa kehilangan waktu.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onClick={() => {
                     sessionStore.clearSession();
                     onRefreshHistory();
                   }}
-                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs text-slate-600 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-400 transition-colors cursor-pointer shadow-xs"
+                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-xs text-slate-600 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-400 transition-colors cursor-pointer shadow-xs"
                 >
-                  Hapus Sesi
+                  Hapus
                 </button>
                 <button
                   type="button"
                   onClick={() => onResumeSession(activeSavedSession)}
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
-                  <span>Lanjutkan Ujian</span>
+                  <span>Lanjutkan</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -390,59 +390,59 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           {activeTab === 'overview' && (
             <>
               {/* LMS Greeting & Hero Section */}
-              <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+              <section className="p-5 sm:p-8 rounded-2xl bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
                 <div className="max-w-xl z-10">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-300 text-xs font-medium mb-3">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-300 text-[11px] font-medium mb-2.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Portal Pembelajaran & CBT Resmi Mandiri</span>
+                    <span>Simulator CBT Resmi EPrT Telkom University</span>
                   </div>
-                  <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
-                    Pusat Simulasi & Diagnostic <span className="text-blue-600 dark:text-blue-400">EPrT Tel-U</span>
+                  <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
+                    Simulasi & Diagnostik <span className="text-blue-600 dark:text-blue-400">EPrT Tel-U</span>
                   </h1>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 mt-2.5 leading-relaxed">
-                    Tingkatkan kesiapan TOEFL ITP sebelum menempuh sidang sarjana atau mendaftar kelas internasional. Evaluasi kelemahan tata bahasa, audio dialog, dan analisis wacana akademik Anda secara presisi.
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 mt-2 leading-relaxed">
+                    Uji kemampuan TOEFL ITP Anda sebelum sidang sarjana (standar min. 450). Evaluasi kelemahan tata bahasa, audio dialog, dan analisis wacana akademik secara akurat.
                   </p>
 
-                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2.5 sm:gap-3">
                     <button
                       type="button"
                       onClick={onStartExam}
-                      className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center gap-2 transition-all hover:translate-y-[-1px] cursor-pointer"
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center justify-center gap-2 transition-all hover:translate-y-[-1px] cursor-pointer"
                     >
                       <PlayCircle className="w-4 h-4" />
-                      <span>Mulai Simulasi Penuh (140 Soal / 125m)</span>
+                      <span>Mulai Simulasi 140 Soal</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveTab('modules')}
-                      className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 font-semibold text-xs transition-colors cursor-pointer shadow-xs"
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 font-semibold text-xs transition-colors cursor-pointer shadow-xs text-center"
                     >
-                      Latihan Per Bagian
+                      Latihan Per Section
                     </button>
                   </div>
                 </div>
 
                 {/* Score Dial / Readiness Visual Pillar */}
-                <div className="p-5 sm:p-6 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] flex flex-col items-center justify-center text-center shrink-0 min-w-[200px] z-10 shadow-xs">
-                  <span className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
+                <div className="p-4 sm:p-6 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] flex flex-col items-center justify-center text-center w-full md:w-auto min-w-[190px] z-10 shadow-xs">
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                     Prediksi Skor EPrT
                   </span>
-                  <div className="text-5xl font-black font-mono text-slate-900 dark:text-white mt-1 mb-2">
+                  <div className="text-4xl sm:text-5xl font-black font-mono text-slate-900 dark:text-white mt-1 mb-2">
                     {currentEstScore > 0 ? currentEstScore : '310'}
                   </div>
 
                   {isS1Ready ? (
-                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-500/30 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Target 450 S1 Tercapai
+                    <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-500/30 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Target S1 Tercapai
                     </span>
                   ) : (
-                    <span className="text-[11px] font-bold text-amber-800 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-500/30 flex items-center gap-1.5">
+                    <span className="text-[10px] sm:text-[11px] font-bold text-amber-800 bg-amber-50 dark:text-amber-400 dark:bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-500/30 flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Butuh {Math.max(0, 450 - currentEstScore)} Poin S1
                     </span>
                   )}
 
-                  <div className="mt-3 text-[10px] text-slate-400 dark:text-zinc-500 font-mono">
-                    Rentang Skor ETS: 310 - 677
+                  <div className="mt-2.5 text-[10px] text-slate-400 dark:text-zinc-500 font-mono">
+                    Skala ETS: 310 - 677
                   </div>
                 </div>
               </section>

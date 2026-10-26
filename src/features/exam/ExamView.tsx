@@ -165,17 +165,22 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT SUB-HEADER (IELTS / Bluebook Examination Status Bar)
           ========================================================================= */}
-      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between sticky top-16 z-20 shadow-xs">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 dark:bg-[#151B28] dark:text-blue-300 border border-slate-200 dark:border-[#1E2638]">
-            {mode === 'exam' ? `Section ${examStep} of 3` : 'Practice Drill'}
+      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 py-2 flex items-center justify-between sticky top-14 sm:top-16 z-20 shadow-xs gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 dark:bg-[#151B28] dark:text-blue-300 border border-slate-200 dark:border-[#1E2638] shrink-0">
+            {mode === 'exam' ? `Sec ${examStep}` : 'Drill'}
           </span>
-          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-zinc-100">
-            {getSectionTitle(currentQ.section)}
+          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-zinc-100 truncate">
+            <span className="sm:hidden">
+              {currentQ.section === 'listening' ? 'Listening' : currentQ.section === 'structure' ? 'Structure' : 'Reading'}
+            </span>
+            <span className="hidden sm:inline">
+              {getSectionTitle(currentQ.section).replace(/^Section \d+:\s*/, '')}
+            </span>
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Keyboard Helper Badge */}
           <div className="hidden xl:flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-zinc-400 font-mono bg-slate-50 dark:bg-[#151B28] px-2.5 py-1 rounded-md border border-slate-200 dark:border-[#1E2638]">
             <Keyboard className="w-3.5 h-3.5 text-slate-400" />
@@ -186,21 +191,24 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={() => setShowPaletteDrawer(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
             title="Buka Peta Soal & Review"
           >
             <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span>Peta Soal ({answeredCount}/{questions.length})</span>
+            <span className="hidden sm:inline">Peta Soal</span>
+            <span>({answeredCount}/{questions.length})</span>
           </button>
 
           {/* Directions / Petunjuk Soal */}
           <button
             type="button"
             onClick={onOpenDirections}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            title="Petunjuk Soal"
           >
             <HelpCircle className="w-3.5 h-3.5 text-amber-500" />
             <span className="hidden sm:inline">Petunjuk Soal</span>
+            <span className="sm:hidden">Petunjuk</span>
           </button>
         </div>
       </div>
@@ -339,7 +347,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
                                 {optText}
                               </div>
                             </div>
-                            <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
+                            <span className="hidden sm:inline-block text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
                               {key}
                             </span>
                           </button>
@@ -499,7 +507,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
                             {optText}
                           </div>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
+                        <span className="hidden sm:inline-block text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
                           {key}
                         </span>
                       </button>
@@ -533,39 +541,43 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT BOTTOM NAVIGATION BAR (Bluebook / IDP Standard Bottom Control)
           ========================================================================= */}
-      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4 shadow-sm">
+      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-1.5 sm:gap-4 shadow-sm">
         <button
           type="button"
           disabled={currentIndex === 0}
           onClick={() => onNavigateIndex(currentIndex - 1)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] disabled:opacity-40 disabled:hover:bg-white text-xs font-semibold transition-all shadow-xs cursor-pointer"
+          className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] disabled:opacity-30 disabled:hover:bg-white text-xs font-semibold transition-all shadow-xs cursor-pointer shrink-0"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span>Sebelumnya</span>
+          <span className="hidden sm:inline">Sebelumnya</span>
+          <span className="sm:hidden">Prev</span>
         </button>
 
         {/* Center: Question Review Palette & Flag Status */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <button
             type="button"
             onClick={onToggleFlag}
-            className={`hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
               flagged[currentQ.id]
                 ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#151B28] dark:text-zinc-300'
             }`}
+            title="Tandai ragu-ragu"
           >
             <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600' : ''}`} />
-            <span>{flagged[currentQ.id] ? 'Ditandai Ragu' : 'Tandai Ragu (F)'}</span>
+            <span className="hidden md:inline">{flagged[currentQ.id] ? 'Ditandai Ragu' : 'Tandai Ragu (F)'}</span>
+            <span className="md:hidden">{flagged[currentQ.id] ? 'Ragu' : 'Tandai'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowPaletteDrawer(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer shrink-0"
           >
             <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span>Semua Soal ({answeredCount}/{questions.length})</span>
+            <span className="hidden sm:inline">Semua Soal</span>
+            <span>({answeredCount}/{questions.length})</span>
           </button>
         </div>
 
@@ -574,9 +586,10 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={onNextStepClick}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer"
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0"
           >
-            <span>{examStep === 3 ? 'Kumpulkan Pre-Test' : `Selesai Section ${examStep}`}</span>
+            <span className="hidden sm:inline">{examStep === 3 ? 'Kumpulkan Ujian' : `Selesai Section ${examStep}`}</span>
+            <span className="sm:hidden">{examStep === 3 ? 'Kumpulkan' : 'Selesai'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         ) : (
@@ -584,9 +597,10 @@ export const ExamView: React.FC<ExamViewProps> = ({
             type="button"
             disabled={currentIndex === questions.length - 1}
             onClick={() => onNavigateIndex(currentIndex + 1)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer"
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:hover:bg-blue-600 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0"
           >
-            <span>Selanjutnya</span>
+            <span className="hidden sm:inline">Selanjutnya</span>
+            <span className="sm:hidden">Next</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         )}

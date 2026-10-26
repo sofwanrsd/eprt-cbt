@@ -71,7 +71,7 @@ export const ExamTimer: React.FC<ExamTimerProps> = React.memo(({ initialSeconds,
             <button
               type="button"
               onClick={() => setIsTimerHidden(true)}
-              className="text-[10px] text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300 pl-1 border-l border-slate-200 dark:border-[#1e2638]"
+              className="hidden sm:inline-block text-[10px] text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300 pl-1 border-l border-slate-200 dark:border-[#1e2638] cursor-pointer"
               title="Sembunyikan sisa waktu"
             >
               Hide

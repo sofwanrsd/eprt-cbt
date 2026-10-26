@@ -339,28 +339,28 @@ export default function App() {
       {/* =========================================================================
           APPLICATION HEADER
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0C1018]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 shadow-2xs">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0C1018]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs">
         {/* Left: Brand Identity & Current Context */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             type="button"
             onClick={handleExitExamToLobby}
-            className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-xs hover:bg-blue-700 transition-colors shrink-0 cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-xs sm:text-sm shadow-xs hover:bg-blue-700 transition-colors shrink-0 cursor-pointer"
             title="Kembali ke Beranda"
             aria-label="Kembali ke Beranda"
           >
             EP
           </button>
-          <div>
-            <div className="text-sm font-bold tracking-tight text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-              <span>EPrT CBT Simulator</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 font-semibold font-mono hidden xs:inline-block">
-                ETS Scale 310-677
+          <div className="min-w-0">
+            <div className="text-xs sm:text-sm font-bold tracking-tight text-slate-900 dark:text-zinc-100 flex items-center gap-1.5 sm:gap-2">
+              <span className="shrink-0">EPrT CBT</span>
+              <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 font-semibold font-mono shrink-0">
+                ETS 310-677
               </span>
             </div>
-            <div className="text-[11px] text-slate-500 dark:text-zinc-400 hidden sm:block">
+            <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-zinc-400 truncate hidden md:block">
               {isExamMode
-                ? `Telkom University Computer-Based Test — ${getSectionTitle(currentQ?.section || "listening")}`
+                ? `Tel-U CBT — ${getSectionTitle(currentQ?.section || "listening")}`
                 : "Official Telkom University Language Center Diagnostic Suite"}
             </div>
           </div>
@@ -368,7 +368,7 @@ export default function App() {
 
         {/* Center: Stage Indicator or Top Nav or Timer */}
         {view === "lobby" && (
-          <nav className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-[#10141E] p-1 rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs">
+          <nav className="hidden xl:flex items-center gap-1 bg-slate-100 dark:bg-[#10141E] p-1 rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs shrink-0">
             <button
               type="button"
               onClick={() => setView("lobby")}
@@ -378,7 +378,7 @@ export default function App() {
             </button>
             <button
               type="button"
-              onClick={() => setShowAudioCalibrationModal(true)}
+              onClick={startOfficialSimulation}
               className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Simulasi Penuh
@@ -409,8 +409,8 @@ export default function App() {
 
         {/* In Exam Mode: Center Stage Breadcrumbs & Bluebook Timer */}
         {view === "exam" && (
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-[#10141E] px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#1E2638] text-xs">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="hidden lg:flex items-center gap-1.5 bg-slate-100 dark:bg-[#10141E] px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#1E2638] text-xs">
               <span className={`px-2 py-0.5 rounded font-semibold ${examStep === 1 ? "bg-blue-600 text-white" : "text-slate-500 dark:text-zinc-500"}`}>
                 1. Listening
               </span>
@@ -434,44 +434,44 @@ export default function App() {
         )}
 
         {/* Right Tools & Theme Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Universal Accessibility Toolbar */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#10141E] p-1 rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs shadow-2xs">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-100 dark:bg-[#10141E] p-0.5 sm:p-1 rounded-lg sm:rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs shadow-2xs">
             <button
               type="button"
               onClick={toggleFontSize}
-              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-              title="Perbesar / Perkecil Ukuran Teks"
+              className="p-1.5 rounded-md sm:rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title="Ukuran Teks"
               aria-label="Ubah ukuran teks"
             >
-              <Type className="w-4 h-4" />
+              <Type className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
             <button
               type="button"
               onClick={toggleSound}
-              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-              title={soundEnabled ? "Matikan Efek Suara" : "Aktifkan Efek Suara"}
+              className="p-1.5 rounded-md sm:rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title="Efek Suara"
               aria-label="Pengaturan suara"
             >
-              {soundEnabled ? <Volume2 className="w-4 h-4 text-blue-600 dark:text-blue-400" /> : <VolumeX className="w-4 h-4" />}
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" /> : <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </button>
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
-              title={theme === "light" ? "Ganti ke Mode Gelap" : "Ganti ke Mode Terang"}
+              className="p-1.5 rounded-md sm:rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title="Ganti Tema"
               aria-label="Toggle tema tampilan"
             >
-              {theme === "light" ? <Moon className="w-4 h-4 text-slate-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
+              {theme === "light" ? <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600" /> : <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />}
             </button>
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors hidden sm:block cursor-pointer"
+              className="p-1.5 rounded-md sm:rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors hidden sm:block cursor-pointer"
               title="Layar Penuh CBT"
               aria-label="Mode layar penuh"
             >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </button>
           </div>
 
@@ -480,23 +480,23 @@ export default function App() {
             <button
               type="button"
               onClick={handleExitExamToLobby}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 transition-colors cursor-pointer shadow-xs"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 transition-colors cursor-pointer shadow-xs"
             >
               {isExamMode ? <LogOut className="w-3.5 h-3.5 text-amber-500" /> : <Home className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />}
               <span className="hidden sm:inline">{isExamMode ? "Simpan & Keluar" : "Dashboard"}</span>
             </button>
           )}
 
-          {/* Custom Question Bank Import Manager (Lobby Only) */}
+          {/* Custom Question Bank Import Manager (Lobby Only, Desktop/Tablet) */}
           {view === "lobby" && (
             <button
               type="button"
               onClick={() => setShowCustomBankModal(true)}
-              className="p-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 dark:bg-[#10141E] dark:hover:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 transition-colors cursor-pointer shadow-xs"
+              className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 dark:bg-[#10141E] dark:hover:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 transition-colors cursor-pointer shadow-xs"
               title="Kelola Bank Soal Kustom"
               aria-label="Kelola Bank Soal Kustom"
             >
-              <Database className="w-4 h-4 text-slate-500 dark:text-zinc-400" />
+              <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 dark:text-zinc-400" />
             </button>
           )}
         </div>
@@ -507,7 +507,7 @@ export default function App() {
           ========================================================================= */}
       {view === "lobby" && (
         <LobbyView
-          onStartExam={() => setShowAudioCalibrationModal(true)}
+          onStartExam={startOfficialSimulation}
           onStartPractice={startSectionPractice}
           onResumeSession={resumeSavedSession}
           onOpenCustomBank={() => setShowCustomBankModal(true)}
