@@ -24,7 +24,13 @@ import {
   Volume2,
   VolumeX,
   Type,
-  Database
+  Database,
+  Sun,
+  Moon,
+  LogOut,
+  HelpCircle,
+  ShieldCheck,
+  CheckCircle2
 } from "lucide-react";
 
 type AppView = "lobby" | "exam" | "practice" | "results" | "review";
@@ -64,7 +70,19 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
     return sessionStore.loadSettings().soundEnabled;
   });
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    return sessionStore.loadSettings().theme || "light";
+  });
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Synchronize document theme class
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
 
   // Initial load from local storage
   useEffect(() => {
@@ -272,13 +290,19 @@ export default function App() {
     const next = !soundEnabled;
     setSoundEnabled(next);
     sounds.enabled = next;
-    sessionStore.saveSettings({ soundEnabled: next, fontSize });
+    sessionStore.saveSettings({ soundEnabled: next, fontSize, theme });
   };
 
   const toggleFontSize = () => {
     const next = fontSize === "normal" ? "large" : "normal";
     setFontSize(next);
-    sessionStore.saveSettings({ soundEnabled, fontSize: next });
+    sessionStore.saveSettings({ soundEnabled, fontSize: next, theme });
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    sessionStore.saveSettings({ soundEnabled, fontSize, theme: nextTheme });
   };
 
   const getSectionTitle = useCallback((sec: SectionId) => {
@@ -290,125 +314,123 @@ export default function App() {
   const answeredInCurrentSection = activeQuestions.filter(q => userAnswers[q.id]).length;
   const flaggedInCurrentSection = activeQuestions.filter(q => flagged[q.id]).length;
 
+  const handleExitExamToLobby = () => {
+    if (view === "exam") {
+      if (confirm("Simpan progres dan keluar ke Dashboard? Anda dapat melanjutkan ujian ini nanti.")) {
+        setView("lobby");
+      }
+    } else {
+      setView("lobby");
+    }
+  };
+
+  const isExamMode = view === "exam" || view === "practice";
+
   return (
     <div
-      className={`min-h-screen flex flex-col bg-[#090c13] text-[#f8fafc] font-sans selection:bg-indigo-500/30 ${
+      className={`min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#090C13] text-[#0F172A] dark:text-[#F8FAFC] font-sans selection:bg-blue-500/20 ${
         fontSize === "large" ? "text-base" : "text-sm"
       }`}
     >
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-[#090c13]/90 backdrop-blur-md border-b border-[#1e2638] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      {/* =========================================================================
+          APPLICATION HEADER
+          ========================================================================= */}
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0C1018]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 shadow-2xs">
+        {/* Left: Brand Identity & Current Context */}
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => {
-              if (view === "exam") {
-                if (confirm("Anda sedang dalam mode ujian. Keluar ke Dashboard sekarang? (Progres tersimpan otomatis)")) {
-                  setView("lobby");
-                }
-              } else {
-                setView("lobby");
-              }
-            }}
-            className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white shadow-sm hover:bg-indigo-500 transition-colors shrink-0"
-            title="Kembali ke Dashboard"
-            aria-label="Kembali ke Dashboard"
+            onClick={handleExitExamToLobby}
+            className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-xs hover:bg-blue-700 transition-colors shrink-0 cursor-pointer"
+            title="Kembali ke Beranda"
+            aria-label="Kembali ke Beranda"
           >
             EP
           </button>
           <div>
-            <div className="text-sm font-bold tracking-tight text-zinc-100 flex items-center gap-2">
+            <div className="text-sm font-bold tracking-tight text-slate-900 dark:text-zinc-100 flex items-center gap-2">
               <span>EPrT CBT Simulator</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium font-mono hidden xs:inline-block">
-                Tel-U Diagnostic
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 font-semibold font-mono hidden xs:inline-block">
+                ETS Scale 310-677
               </span>
             </div>
-            <div className="text-[11px] text-zinc-400 hidden sm:block">
-              Official Language Center ETS TOEFL ITP Standard
+            <div className="text-[11px] text-slate-500 dark:text-zinc-400 hidden sm:block">
+              {isExamMode
+                ? `Telkom University Computer-Based Test — ${getSectionTitle(currentQ?.section || "listening")}`
+                : "Official Telkom University Language Center Diagnostic Suite"}
             </div>
           </div>
         </div>
 
-        {/* Center: Top Navigation or Stage Indicator */}
+        {/* Center: Stage Indicator or Top Nav or Timer */}
         {view === "lobby" && (
-          <nav className="hidden md:flex items-center gap-1 bg-[#10141e] px-2 py-1 rounded-xl border border-[#1e2638] text-xs">
+          <nav className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-[#10141E] p-1 rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs">
             <button
               type="button"
               onClick={() => setView("lobby")}
-              className="px-3 py-1 rounded-lg font-semibold bg-[#151b28] text-indigo-300"
+              className="px-3.5 py-1.5 rounded-lg font-semibold bg-white dark:bg-[#151B28] text-blue-600 dark:text-blue-400 shadow-2xs cursor-pointer"
             >
               Dashboard
             </button>
             <button
               type="button"
               onClick={startOfficialSimulation}
-              className="px-3 py-1 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Simulasi Penuh
             </button>
             <button
               type="button"
               onClick={() => startSectionPractice("listening", "official")}
-              className="px-3 py-1 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Latihan Section
             </button>
             <button
               type="button"
               onClick={() => setShowCustomBankModal(true)}
-              className="px-3 py-1 rounded-lg text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors cursor-pointer"
             >
               Bank Kustom
             </button>
           </nav>
         )}
 
+        {/* In Exam Mode: Center Stage Breadcrumbs & Bluebook Timer */}
         {view === "exam" && (
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-[#10141e] px-3 py-1.5 rounded-xl border border-[#1e2638] text-xs">
-            <span
-              className={`px-2.5 py-0.5 rounded-md font-semibold transition-colors ${
-                examStep === 1 ? "bg-indigo-600 text-white shadow-sm" : "text-zinc-500"
-              }`}
-            >
-              1. Listening
-            </span>
-            <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
-            <span
-              className={`px-2.5 py-0.5 rounded-md font-semibold transition-colors ${
-                examStep === 2 ? "bg-indigo-600 text-white shadow-sm" : "text-zinc-500"
-              }`}
-            >
-              2. Grammar
-            </span>
-            <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
-            <span
-              className={`px-2.5 py-0.5 rounded-md font-semibold transition-colors ${
-                examStep === 3 ? "bg-indigo-600 text-white shadow-sm" : "text-zinc-500"
-              }`}
-            >
-              3. Reading
-            </span>
-          </div>
-        )}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-[#10141E] px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#1E2638] text-xs">
+              <span className={`px-2 py-0.5 rounded font-semibold ${examStep === 1 ? "bg-blue-600 text-white" : "text-slate-500 dark:text-zinc-500"}`}>
+                1. Listening
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-600" />
+              <span className={`px-2 py-0.5 rounded font-semibold ${examStep === 2 ? "bg-blue-600 text-white" : "text-slate-500 dark:text-zinc-500"}`}>
+                2. Structure
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-600" />
+              <span className={`px-2 py-0.5 rounded font-semibold ${examStep === 3 ? "bg-blue-600 text-white" : "text-slate-500 dark:text-zinc-500"}`}>
+                3. Reading
+              </span>
+            </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-2">
-          {view === "exam" && (
             <ExamTimer
               key={`timer-step-${examStep}`}
               initialSeconds={getCurrentSectionSeconds()}
               isRunning={view === "exam"}
               onExpire={handleSectionTimeExpired}
             />
-          )}
+          </div>
+        )}
 
-          {/* Sound & Font size controls */}
-          <div className="flex items-center gap-1 bg-[#10141e] p-1 rounded-xl border border-[#1e2638] text-xs">
+        {/* Right Tools & Theme Controls */}
+        <div className="flex items-center gap-2">
+          {/* Universal Accessibility Toolbar */}
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#10141E] p-1 rounded-xl border border-slate-200 dark:border-[#1E2638] text-xs shadow-2xs">
             <button
               type="button"
               onClick={toggleFontSize}
-              className="p-1.5 rounded-lg hover:bg-[#151b28] text-zinc-400 hover:text-zinc-100 transition-colors"
-              title="Perbesar Ukuran Teks"
+              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title="Perbesar / Perkecil Ukuran Teks"
               aria-label="Ubah ukuran teks"
             >
               <Type className="w-4 h-4" />
@@ -416,16 +438,25 @@ export default function App() {
             <button
               type="button"
               onClick={toggleSound}
-              className="p-1.5 rounded-lg hover:bg-[#151b28] text-zinc-400 hover:text-zinc-100 transition-colors"
-              title={soundEnabled ? "Matikan Suara Audio" : "Aktifkan Suara Audio"}
+              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title={soundEnabled ? "Matikan Efek Suara" : "Aktifkan Efek Suara"}
               aria-label="Pengaturan suara"
             >
-              {soundEnabled ? <Volume2 className="w-4 h-4 text-indigo-400" /> : <VolumeX className="w-4 h-4" />}
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-blue-600 dark:text-blue-400" /> : <VolumeX className="w-4 h-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              title={theme === "light" ? "Ganti ke Mode Gelap" : "Ganti ke Mode Terang"}
+              aria-label="Toggle tema tampilan"
+            >
+              {theme === "light" ? <Moon className="w-4 h-4 text-slate-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
             </button>
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="p-1.5 rounded-lg hover:bg-[#151b28] text-zinc-400 hover:text-zinc-100 transition-colors hidden sm:block"
+              className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-[#151B28] text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors hidden sm:block cursor-pointer"
               title="Layar Penuh CBT"
               aria-label="Mode layar penuh"
             >
@@ -433,39 +464,36 @@ export default function App() {
             </button>
           </div>
 
+          {/* Action Button: Dashboard / Save & Exit */}
           {view !== "lobby" && (
             <button
               type="button"
-              onClick={() => {
-                if (view === "exam") {
-                  if (confirm("Keluar dari ujian ke Dashboard? Progres jawaban tersimpan.")) {
-                    setView("lobby");
-                  }
-                } else {
-                  setView("lobby");
-                }
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#10141e] border border-[#1e2638] hover:bg-[#151b28] text-xs font-medium text-zinc-300 transition-colors"
+              onClick={handleExitExamToLobby}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 transition-colors cursor-pointer shadow-xs"
             >
-              <Home className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="hidden sm:inline">Dashboard</span>
+              {isExamMode ? <LogOut className="w-3.5 h-3.5 text-amber-500" /> : <Home className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />}
+              <span className="hidden sm:inline">{isExamMode ? "Simpan & Keluar" : "Dashboard"}</span>
             </button>
           )}
 
-          {/* Custom Question Bank Import Manager */}
-          <button
-            type="button"
-            onClick={() => setShowCustomBankModal(true)}
-            className="p-2 rounded-xl bg-[#10141e] border border-[#1e2638] hover:bg-[#151b28] text-zinc-400 hover:text-zinc-200 transition-colors"
-            title="Kelola Bank Soal Kustom"
-            aria-label="Kelola Bank Soal Kustom"
-          >
-            <Database className="w-3.5 h-3.5" />
-          </button>
+          {/* Custom Question Bank Import Manager (Lobby Only) */}
+          {view === "lobby" && (
+            <button
+              type="button"
+              onClick={() => setShowCustomBankModal(true)}
+              className="p-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 dark:bg-[#10141E] dark:hover:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 transition-colors cursor-pointer shadow-xs"
+              title="Kelola Bank Soal Kustom"
+              aria-label="Kelola Bank Soal Kustom"
+            >
+              <Database className="w-4 h-4 text-slate-500 dark:text-zinc-400" />
+            </button>
+          )}
         </div>
       </header>
 
-      {/* Main Views Container */}
+      {/* =========================================================================
+          VIEW SWITCHER
+          ========================================================================= */}
       {view === "lobby" && (
         <LobbyView
           onStartExam={startOfficialSimulation}
@@ -505,7 +533,6 @@ export default function App() {
         />
       )}
 
-      {/* Dedicated Results Page */}
       {view === "results" && scoreReport && (
         <ResultsView
           score={scoreReport}
@@ -520,6 +547,7 @@ export default function App() {
         />
       )}
 
+      {/* Global Modals */}
       <SectionTransitionModal
         isOpen={showTransitionModal}
         currentStep={examStep}

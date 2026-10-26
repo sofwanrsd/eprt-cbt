@@ -4,6 +4,50 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [3.0.0] - 2026-10-25 (Complete UI/UX Overhaul — Authentic Computer-Based Testing Experience)
+
+### Design System & Light Mode Default
+- **Standardized CBT Examination Theme:** Implemented Light Mode as the primary default theme (`#F8FAFC` canvas, `#FFFFFF` surfaces, `#0F172A` text, `#2563EB` royal blue accent, `#E2E8F0` borders, `#16A34A` success, `#D97706` warning) with full adaptive support for Dark Mode (`dark:` variants).
+- **Theme Switcher:** Added real-time Light/Dark toggle in the top navigation toolbar that persists to `localStorage`.
+- **Examination Typography:** Crisp sans-serif hierarchy inspired by College Board Bluebook and IDP IELTS with generous line-height for academic reading passages.
+
+### Distraction-Free CBT Examination Shell
+- **Dedicated Exam Workspace:** Completely removed LMS sidebar and external navigation links during active examinations (`view === "exam"`).
+- **Bluebook-Inspired Examination Header:**
+  - Compact status bar with section title, section indicator pills, and question count (`Question 1 of 50`).
+  - Integrated `ExamTimer` with Bluebook-style "Hide Time / Show Time" toggle.
+  - Dedicated "Simpan & Keluar" (Save & Exit) button with confirmation prompt.
+- **IELTSArena Split-Screen Reading (Section 3):**
+  - Left panel: 54% width academic reading passage with independent scroll and `[P1]`, `[P2]`, `[P3]` paragraph markers.
+  - Right panel: 46% width question area with four multiple-choice options (`min-h-[56px]`), distinct badges, and quick-jump question strip.
+  - Mobile view: Seamless tab switcher between `[Wacana Bacaan]` and `[Pertanyaan]` preserving scroll position.
+- **Bluebook Structure & Written Expression (Section 2):**
+  - Focused, distraction-free reading column.
+  - Part B Error Identification: Interactive underlined segments `[word] (A)` clickable directly in sentences with instant option synchronization and keyboard shortcuts (A-D / 1-4).
+- **Listening Interface (Section 1):**
+  - Clean audio player without fake visualizers, displaying active speaker tags (`Speaking: Woman` / `Speaking: Man`).
+  - Transcripts hidden during exam mode and only accessible during practice or review.
+- **CBT Practice-Style Question Palette (Matrix Review Drawer):**
+  - Responsive 5x10 grid modal accessible via "Peta Soal" button.
+  - Semantic status indicators:
+    - *Terjawab* (Blue checkmark / solid blue tile)
+    - *Ditandai Ragu* (Amber flag icon / badge)
+    - *Belum Diisi* (Neutral outline)
+    - *Aktif* (Double-ring focus)
+
+### LMS Learning Dashboard Redesign
+- **Canvas / Coursera Style Architecture:** Persistent left navigation sidebar in dashboard view with institutional branding (*Telkom University Language Center*).
+- **Student Graduation Readiness Widget:** Bottom sidebar gauge showing score progress against the official S1 threshold (min. 450) and S2/IUP threshold (min. 475).
+- **Hero & Key Performance Indicators:** Real-time metrics including target score, highest attempt, completed sessions, and verified question bank count (610 items).
+- **Section Learning Cards & CeLOE Practice:** Direct access to drill modules (Listening, Structure, Reading) and the 470-question CeLOE Moodle repository.
+- **Diagnostic Activity Log:** Complete attempt history with JSON export and import capabilities.
+
+### Results & Review Mode Overhaul
+- **Dedicated Results Analytics Page (`src/features/results/ResultsView.tsx`):** ETS scaled score (310–677), official graduation threshold status, section breakdowns, sub-part mastery breakdown (Part A, Part B, Part C), grammatical priority focus, and print-to-PDF stylesheet.
+- **Refined Review Mode:** Semantic comparison highlighting correct keys in emerald green and student mistakes in red, paired with grammatical rule formulas.
+
+---
+
 ## [2.2.0] - 2026-10-25 (Keyboard Navigation, Advanced Diagnostics & Performance Splitting)
 
 ### Exam Keyboard Shortcuts
@@ -62,49 +106,3 @@ All notable changes to this project are documented in this file.
 
 ### Automated Testing & Quality
 - **Expanded Test Suite:** Added `src/test/ResultsView.test.tsx` bringing the test suite to 24 tests across 6 files (100% PASS).
-
----
-
-## [2.0.0] - 2026-10-25 (Production Hardened Release)
-
-### Security & Integrity
-- **Removed Fake Admin Security Theater:** Completely removed hardcoded PINs (`taveve2026`, `eprt2026`, `telu2026`) from client bundles. Replaced with transparent client-side **Custom Question Bank Manager** (`src/components/CustomBankModal.tsx`).
-- **Zero-Secret Verification:** Verified that no tokens, passwords, or session cookies are committed or bundled.
-- **Removed Faux Certificates:** Removed misleading institutional certificate generation from pre-test tryouts; replaced with honest **Diagnostic Assessment Reports** with targeted study recommendations.
-
-### Educational Assessment & Scoring
-- **Fixed Scoring Matrix Scale Flaw:** Fixed `src/data/toeflScoring.ts` where raw score 0 previously resulted in 217. Implemented official ETS Level 1 conversion scale with minimum score 310 and maximum score 677.
-- **Official Tel-U LaC Section Timing:** Replaced flat 120-minute timer with official section durations:
-  - Section 1 (Listening): 45 minutes
-  - Section 2 (Structure): 25 minutes
-  - Section 3 (Reading): 55 minutes
-  - Total Duration: 125 minutes
-- **Diagnostic Advice Engine:** Automatically analyzes the lowest-performing section and provides targeted study advice based on student weaknesses.
-
-### Audio & Listening Engine
-- **Resolved Broken Listening Assets:** Removed broken mock paths (`/audio/...`) that triggered 404 network errors.
-- **Multi-Speaker Speech Synthesis:** Built an intelligent dialogue engine in `src/components/AudioPlayer.tsx` with role allocation (female voice for Woman, male voice for Man/Professor, narrator voice).
-- **Graceful Error Handling:** Handled playback promise rejections and added clear disclosures ("Audio Sintetis Web Speech Synthesis").
-
-### Architecture & State Machine
-- **Refactored Monolith App.tsx:** Decomposed 1,000+ line monolithic `App.tsx` into domain features:
-  - `src/features/lobby/LobbyView.tsx`
-  - `src/features/exam/ExamView.tsx`
-  - `src/features/review/ReviewView.tsx`
-- **Session Persistence:** Added versioned `localStorage` persistence layer in `src/utils/sessionStorage.ts` for autosaving answers, flags, deadlines, and recent attempt history.
-- **Unfinished Session Recovery:** Added resume banner on the lobby screen allowing students to recover interrupted exam sessions.
-
-### Data Engineering & Validation
-- **Zod Schema Validator:** Built `src/utils/questionValidator.ts` with strict validation for options, answers, passages, and transcripts.
-- **Question Bank Audit:** Verified 140 simulation questions (100% valid, 0 duplicates). Filtered 470 valid interactive multiple-choice questions from CeLOE dataset.
-- **Added Automated Validator Script:** Created `scripts/validate_question_bank.ts` generating `docs/QUESTION_BANK_AUDIT.md`.
-
-### Performance & UI/UX
-- **Buttery-Smooth Scrolling:** Removed `backdrop-blur-*` filters on sticky navigation headers; eliminated re-render lag by isolating countdown timer state in `<ExamTimer />`.
-- **Reading Split-Screen:** Added synchronized 50:50 desktop split-screen with labeled paragraph indices (`P1`, `P2`, `P3`) and independent scroll containers.
-- **Interactive Error Identification:** Enabled clickable underlined words directly within question sentences for Structure Part B.
-- **Lucide Vector Icons:** Enforced zero-emoji policy using crisp SVG vector icons throughout the interface.
-
-### Automated Testing & CI
-- **Automated Test Suite:** Configured Vitest + React Testing Library + JSDOM with 21 unit, integration, and component tests across 5 test files.
-- **GitHub Actions CI:** Added `.github/workflows/ci.yml` verifying lint, typecheck, tests, and production build.

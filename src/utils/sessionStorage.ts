@@ -30,6 +30,7 @@ export interface CompletedExamRecord {
 export interface UserSettings {
   soundEnabled: boolean;
   fontSize: 'normal' | 'large';
+  theme: 'light' | 'dark';
 }
 
 export const sessionStore = {
@@ -168,6 +169,7 @@ export const sessionStore = {
     const defaults: UserSettings = {
       soundEnabled: true,
       fontSize: 'normal',
+      theme: 'light',
     };
     if (typeof window === 'undefined') return defaults;
     try {
@@ -177,6 +179,7 @@ export const sessionStore = {
       return {
         soundEnabled: typeof parsed.soundEnabled === 'boolean' ? parsed.soundEnabled : true,
         fontSize: parsed.fontSize === 'large' ? 'large' : 'normal',
+        theme: parsed.theme === 'dark' ? 'dark' : 'light',
       };
     } catch (_) {
       return defaults;

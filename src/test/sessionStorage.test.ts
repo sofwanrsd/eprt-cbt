@@ -128,12 +128,14 @@ describe('Local Session & History Persistence Store', () => {
     expect(sessionStore.loadSettings()).toEqual({
       soundEnabled: true,
       fontSize: 'normal',
+      theme: 'light',
     });
 
-    sessionStore.saveSettings({ soundEnabled: false, fontSize: 'large' });
+    sessionStore.saveSettings({ soundEnabled: false, fontSize: 'large', theme: 'dark' });
     expect(sessionStore.loadSettings()).toEqual({
       soundEnabled: false,
       fontSize: 'large',
+      theme: 'dark',
     });
   });
 });

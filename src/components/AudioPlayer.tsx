@@ -4,11 +4,13 @@ import { Play, Pause, RotateCcw, Headphones, AlertCircle } from 'lucide-react';
 interface AudioPlayerProps {
   speakerText?: string[];
   audioUrl?: string;
+  isPracticeMode?: boolean;
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   speakerText,
   audioUrl,
+  isPracticeMode = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTurnIndex, setActiveTurnIndex] = useState<number | null>(null);
@@ -161,7 +163,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       : null;
 
   return (
-    <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+    <div className="bg-slate-50 border border-slate-200 dark:bg-[#10141e] dark:border-[#1e2638] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
       {audioUrl && !useSpeechFallback && (
         <audio
           ref={audioRef}
@@ -173,30 +175,30 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         />
       )}
 
-      <div className="flex items-center gap-3.5 w-full sm:w-auto">
+      <div className="flex items-center gap-3 w-full sm:w-auto">
         <div
-          className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-colors ${
+          className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
             isPlaying
-              ? 'bg-indigo-500/15 border-indigo-500/30 text-indigo-400'
-              : 'bg-[#151b28] border-[#1e2638] text-zinc-400'
+              ? 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-500/15 dark:border-blue-500/30 dark:text-blue-400'
+              : 'bg-white border-slate-200 text-slate-500 dark:bg-[#151b28] dark:border-[#1e2638] dark:text-zinc-400'
           }`}
         >
-          <Headphones className="w-5 h-5" />
+          <Headphones className="w-4 h-4" />
         </div>
 
         <div>
-          <div className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
-            <span>Listening Audio Dialogue</span>
+          <div className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+            <span>Listening Audio Track</span>
             {isPlaying && (
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium animate-pulse">
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300 font-medium animate-pulse">
                 {activeSpeakerLabel ? `Speaking: ${activeSpeakerLabel}` : 'Playing'}
               </span>
             )}
           </div>
-          <div className="text-xs text-zinc-400 mt-0.5">
+          <div className="text-[11px] text-slate-500 dark:text-zinc-400">
             {audioUrl && !useSpeechFallback
-              ? 'Direct Audio Track'
-              : 'Multi-Speaker Speech Synthesis (American English)'}
+              ? 'Official Recording Audio'
+              : 'Speech Synthesis (Standard North American English)'}
           </div>
         </div>
       </div>
@@ -205,42 +207,44 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         <button
           type="button"
           onClick={togglePlay}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
             isPlaying
-              ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
-              : 'bg-[#151b28] hover:bg-[#1a2233] border border-[#1e2638] text-zinc-200'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+              : 'bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-200'
           }`}
           aria-label={isPlaying ? 'Pause Audio' : 'Play Audio'}
         >
           {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-          <span>{isPlaying ? 'Pause' : 'Play Dialogue'}</span>
+          <span>{isPlaying ? 'Pause' : 'Play Audio'}</span>
         </button>
 
         <button
           type="button"
           onClick={restartAudio}
-          className="p-2 rounded-xl bg-[#151b28] hover:bg-[#1a2233] border border-[#1e2638] text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="p-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-400 transition-colors"
           title="Restart Audio"
           aria-label="Restart audio from beginning"
         >
           <RotateCcw className="w-3.5 h-3.5" />
         </button>
 
-        <select
-          value={speechRate}
-          onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-          className="bg-[#151b28] border border-[#1e2638] text-xs rounded-xl px-2.5 py-2 text-zinc-300 focus:outline-none focus:border-indigo-500 cursor-pointer"
-          title="Playback Speed"
-          aria-label="Select playback speed"
-        >
-          <option value="0.85">0.85x</option>
-          <option value="0.95">1.0x (Normal)</option>
-          <option value="1.1">1.15x</option>
-        </select>
+        {isPracticeMode && (
+          <select
+            value={speechRate}
+            onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
+            className="bg-white border border-slate-200 dark:bg-[#151b28] dark:border-[#1e2638] text-xs rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-zinc-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+            title="Playback Speed"
+            aria-label="Select playback speed"
+          >
+            <option value="0.85">0.85x</option>
+            <option value="0.95">1.0x (Normal)</option>
+            <option value="1.1">1.15x</option>
+          </select>
+        )}
       </div>
 
       {errorMessage && (
-        <div className="w-full mt-2 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+        <div className="w-full mt-2 p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/40 dark:border-red-900/60 dark:text-red-300 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>

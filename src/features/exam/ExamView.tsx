@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Question, SectionId } from '../../types';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import {
@@ -11,7 +11,10 @@ import {
   HelpCircle,
   Layers,
   BookOpen,
-  Keyboard
+  Keyboard,
+  X,
+  Check,
+  Bookmark
 } from 'lucide-react';
 
 interface ExamViewProps {
@@ -44,21 +47,11 @@ export const ExamView: React.FC<ExamViewProps> = ({
   getSectionTitle,
 }) => {
   const [showTranscript, setShowTranscript] = useState(false);
-  const [mapPage, setMapPage] = useState(0);
   const [mobileReadingTab, setMobileReadingTab] = useState<'passage' | 'question'>('question');
+  const [showPaletteDrawer, setShowPaletteDrawer] = useState(false);
 
+  const passageScrollRef = useRef<HTMLDivElement | null>(null);
   const currentQ = questions[currentIndex] || questions[0];
-
-  // Pagination for question grid when items > 50 (e.g. CeLOE bank)
-  const mapChunkSize = 50;
-  const totalMapPages = Math.ceil(questions.length / mapChunkSize);
-
-  useEffect(() => {
-    const pageOfCurrent = Math.floor(currentIndex / mapChunkSize);
-    if (pageOfCurrent !== mapPage) {
-      setMapPage(pageOfCurrent);
-    }
-  }, [currentIndex, mapPage]);
 
   // Global Keyboard Shortcuts (A-D, 1-4, ArrowLeft/Right, N/P, F)
   useEffect(() => {
@@ -108,14 +101,15 @@ export const ExamView: React.FC<ExamViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, questions.length, onSelectOption, onNavigateIndex, onToggleFlag]);
 
-  const currentChunkQuestions = useMemo(() => {
-    const start = mapPage * mapChunkSize;
-    return questions.slice(start, start + mapChunkSize);
-  }, [questions, mapPage]);
+  const answeredCount = useMemo(() => {
+    return questions.filter((q) => userAnswers[q.id]).length;
+  }, [questions, userAnswers]);
 
-  const answeredInCurrentSection = questions.filter(q => userAnswers[q.id]).length;
+  const flaggedCount = useMemo(() => {
+    return questions.filter((q) => flagged[q.id]).length;
+  }, [questions, flagged]);
 
-  // Interactive Prompt for Error Identification (Structure Part B)
+  // Interactive Prompt for Error Identification (Structure Part B - Bluebook style)
   const renderInteractivePrompt = (prompt: string) => {
     if (currentQ.section !== 'structure' || currentQ.part !== 'Part B') {
       return <span>{prompt}</span>;
@@ -136,9 +130,11 @@ export const ExamView: React.FC<ExamViewProps> = ({
       const letter = match[2] as 'A' | 'B' | 'C' | 'D';
       const isSelected = userAnswers[currentQ.id] === letter;
 
-      let highlightClass = 'border-b-2 border-zinc-400 text-zinc-100 hover:border-indigo-400 hover:bg-indigo-500/10';
+      let highlightClass =
+        'border-b-2 border-slate-400 text-slate-900 hover:border-blue-600 hover:bg-blue-50 dark:border-zinc-400 dark:text-zinc-100 dark:hover:border-blue-400 dark:hover:bg-blue-500/10';
       if (isSelected) {
-        highlightClass = 'border-b-2 border-indigo-400 text-indigo-300 font-bold bg-indigo-500/20';
+        highlightClass =
+          'border-b-2 border-blue-600 text-blue-700 font-bold bg-blue-100/70 dark:border-blue-400 dark:text-blue-300 dark:bg-blue-500/20';
       }
 
       parts.push(
@@ -146,11 +142,11 @@ export const ExamView: React.FC<ExamViewProps> = ({
           key={letter}
           type="button"
           onClick={() => onSelectOption(letter)}
-          className={`inline-flex items-baseline px-1.5 py-0.5 rounded-md cursor-pointer transition-colors ${highlightClass}`}
+          className={`inline-flex items-baseline px-1.5 py-0.5 rounded cursor-pointer transition-colors ${highlightClass}`}
           title={`Pilih opsi (${letter}): ${word}`}
         >
           <span className="font-semibold underline underline-offset-4">{word}</span>
-          <span className="text-xs font-mono font-bold text-indigo-400 ml-1">({letter})</span>
+          <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 ml-1">({letter})</span>
         </button>
       );
 
@@ -165,53 +161,66 @@ export const ExamView: React.FC<ExamViewProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Sub-Header / Exam Navigation Bar */}
-      <div className="bg-[#10141e] border-b border-[#1e2638] px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between sticky top-16 z-20">
+    <div className="flex-1 flex flex-col bg-[#F8FAFC] dark:bg-[#090C13] text-[#0F172A] dark:text-[#F8FAFC] min-h-[calc(100vh-64px)] justify-between">
+      {/* =========================================================================
+          CBT SUB-HEADER (IELTS / Bluebook Examination Status Bar)
+          ========================================================================= */}
+      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between sticky top-16 z-20 shadow-xs">
         <div className="flex items-center gap-3">
-          <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md bg-[#151b28] border border-[#1e2638] text-indigo-300">
-            {mode === 'exam' ? `Tahap ${examStep} / 3` : 'Latihan Bebas'}
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 dark:bg-[#151B28] dark:text-blue-300 border border-slate-200 dark:border-[#1E2638]">
+            {mode === 'exam' ? `Section ${examStep} of 3` : 'Practice Drill'}
           </span>
-          <span className="text-sm font-semibold text-zinc-200">
+          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-zinc-100">
             {getSectionTitle(currentQ.section)}
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-zinc-400 font-mono bg-[#151b28] px-2.5 py-1 rounded-lg border border-[#1e2638]">
-            <Keyboard className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Shortcuts: 1-4 / A-D · ← → · F</span>
+          {/* Keyboard Helper Badge */}
+          <div className="hidden xl:flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-zinc-400 font-mono bg-slate-50 dark:bg-[#151B28] px-2.5 py-1 rounded-md border border-slate-200 dark:border-[#1E2638]">
+            <Keyboard className="w-3.5 h-3.5 text-slate-400" />
+            <span>Shortcuts: A-D / 1-4 · ← → · F</span>
           </div>
 
+          {/* Question Palette Drawer Trigger */}
+          <button
+            type="button"
+            onClick={() => setShowPaletteDrawer(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            title="Buka Peta Soal & Review"
+          >
+            <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Peta Soal ({answeredCount}/{questions.length})</span>
+          </button>
+
+          {/* Directions / Petunjuk Soal */}
           <button
             type="button"
             onClick={onOpenDirections}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#151b28] hover:bg-[#1a2233] border border-[#1e2638] text-xs font-medium text-zinc-300 hover:text-zinc-100 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
           >
-            <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
+            <HelpCircle className="w-3.5 h-3.5 text-amber-500" />
             <span className="hidden sm:inline">Petunjuk Soal</span>
           </button>
-
-          <div className="text-xs text-zinc-400 font-mono">
-            {currentIndex + 1} <span className="text-zinc-600">/</span> {questions.length}
-          </div>
         </div>
       </div>
 
-      {/* Main Grid */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Split Screen for Reading Section */}
+      {/* =========================================================================
+          MAIN EXAMINATION WORKSPACE
+          ========================================================================= */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-start">
+        {/* CASE 1: READING COMPREHENSION (IELTSArena 54:46 Split-Screen Experience) */}
         {currentQ.section === 'reading' && currentQ.passage ? (
-          <>
+          <div className="flex-1 flex flex-col">
             {/* Mobile Tab Switcher */}
-            <div className="lg:hidden col-span-1 flex rounded-xl bg-[#10141e] border border-[#1e2638] p-1 mb-2">
+            <div className="lg:hidden flex rounded-lg bg-slate-200 dark:bg-[#121622] p-1 mb-3">
               <button
                 type="button"
                 onClick={() => setMobileReadingTab('passage')}
-                className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   mobileReadingTab === 'passage'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-white text-slate-900 shadow-xs dark:bg-blue-600 dark:text-white'
+                    : 'text-slate-600 dark:text-zinc-400'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -220,10 +229,10 @@ export const ExamView: React.FC<ExamViewProps> = ({
               <button
                 type="button"
                 onClick={() => setMobileReadingTab('question')}
-                className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   mobileReadingTab === 'question'
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-white text-slate-900 shadow-xs dark:bg-blue-600 dark:text-white'
+                    : 'text-slate-600 dark:text-zinc-400'
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -231,439 +240,467 @@ export const ExamView: React.FC<ExamViewProps> = ({
               </button>
             </div>
 
-            {/* Left Split Column: Reading Passage */}
-            <div
-              className={`lg:col-span-6 flex flex-col ${
-                mobileReadingTab === 'question' ? 'hidden lg:flex' : 'flex'
-              }`}
-            >
-              <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-5 sm:p-7 shadow-sm flex-1 flex flex-col max-h-[680px] overflow-hidden">
-                <div className="flex items-center justify-between border-b border-[#1e2638] pb-3 mb-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-indigo-400 flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
-                    <span>Academic Reading Passage</span>
-                  </div>
-                  <span className="text-[11px] text-zinc-500 font-mono">Independent Scroll</span>
-                </div>
-
-                <div className="flex-1 overflow-y-auto pr-3 text-zinc-200 leading-relaxed font-serif whitespace-pre-line text-sm sm:text-base space-y-4 smooth-scroll">
-                  {currentQ.passage.split('\n\n').map((paragraph, pIdx) => (
-                    <div key={pIdx} className="relative pl-7">
-                      <span className="absolute left-0 top-0.5 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#151b28] text-zinc-400 font-bold select-none border border-[#1e2638]">
-                        P{pIdx + 1}
-                      </span>
-                      <p className="text-zinc-300 leading-relaxed">{paragraph}</p>
+            {/* Desktop Split Grid (54% Reading, 46% Question) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+              {/* Left Column: Academic Reading Passage */}
+              <div
+                className={`lg:col-span-7 flex flex-col ${
+                  mobileReadingTab === 'question' ? 'hidden lg:flex' : 'flex'
+                }`}
+              >
+                <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-xl p-6 sm:p-7 shadow-xs flex flex-col h-[650px] overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1E2638] pb-3 mb-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      <span>Reading Passage</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Split Column: Question & Options */}
-            <div
-              className={`lg:col-span-6 flex flex-col gap-4 ${
-                mobileReadingTab === 'passage' ? 'hidden lg:flex' : 'flex'
-              }`}
-            >
-              <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-5 sm:p-7 shadow-sm flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between border-b border-[#1e2638] pb-4 mb-5">
-                    <span className="text-sm font-bold text-zinc-200">
-                      Soal Nomor {currentIndex + 1}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={onToggleFlag}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
-                        flagged[currentQ.id]
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                          : 'bg-[#151b28] border border-[#1e2638] text-zinc-400 hover:text-zinc-200'
-                      }`}
-                      aria-label="Tandai ragu-ragu"
-                    >
-                      <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current' : ''}`} />
-                      <span>{flagged[currentQ.id] ? 'Ragu' : 'Tandai'}</span>
-                    </button>
+                    <span className="text-[11px] text-slate-400 dark:text-zinc-500 font-mono">Independent Scroll</span>
                   </div>
 
-                  <div className="text-base sm:text-lg font-medium text-zinc-100 mb-6 leading-relaxed">
-                    {currentQ.prompt}
-                  </div>
-
-                  <div className="space-y-3">
-                    {(['A', 'B', 'C', 'D'] as const).map(key => {
-                      const optText = currentQ.options[key];
-                      if (!optText || optText === '-') return null;
-
-                      const isSelected = userAnswers[currentQ.id] === key;
-                      const borderClass = isSelected
-                        ? 'border-indigo-500/80 bg-indigo-500/10 text-zinc-100 shadow-sm'
-                        : 'border-[#1e2638] hover:border-[#2a344d] bg-[#121622] hover:bg-[#151b28] text-zinc-300';
-
-                      return (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => onSelectOption(key)}
-                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 ${borderClass}`}
-                        >
-                          <div className="flex items-start gap-3.5">
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-indigo-600 text-white shadow-sm'
-                                  : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
-                              }`}
-                            >
-                              {key}
-                            </div>
-                            <div className="text-sm font-normal pt-0.5 leading-normal">
-                              {optText}
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-mono text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-[#10141e] border border-[#1e2638] shrink-0 mt-0.5">
-                            Key: {key}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Immediate Explanation in Practice Mode */}
-                  {mode === 'practice' && userAnswers[currentQ.id] && (
-                    <div className="mt-5 p-4 rounded-xl bg-[#151b28] border border-[#1e2638] text-xs space-y-1.5">
-                      <div className="font-bold text-zinc-200 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
-                        <span>Pembahasan Latihan:</span>
-                      </div>
-                      <p className="text-zinc-300 leading-relaxed">
-                        {currentQ.explanation}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Navigation */}
-                <div className="flex items-center justify-between border-t border-[#1e2638] pt-5 mt-6">
-                  <button
-                    type="button"
-                    disabled={currentIndex === 0}
-                    onClick={() => onNavigateIndex(currentIndex - 1)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151b28] border border-[#1e2638] hover:bg-[#1a2233] disabled:opacity-40 disabled:hover:bg-[#151b28] text-xs font-semibold text-zinc-200 transition-colors"
+                  <div
+                    ref={passageScrollRef}
+                    className="flex-1 overflow-y-auto pr-3 text-slate-800 dark:text-zinc-200 leading-relaxed font-serif text-sm sm:text-base space-y-4 smooth-scroll select-text"
                   >
-                    <ChevronLeft className="w-4 h-4" />
-                    <span>Sebelumnya</span>
-                  </button>
-
-                  {mode === 'exam' && currentIndex === questions.length - 1 ? (
-                    <button
-                      type="button"
-                      onClick={onNextStepClick}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-colors"
-                    >
-                      <span>Kumpulkan Pre-Test</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={currentIndex === questions.length - 1}
-                      onClick={() => onNavigateIndex(currentIndex + 1)}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151b28] border border-[#1e2638] hover:bg-[#1a2233] disabled:opacity-40 disabled:hover:bg-[#151b28] text-xs font-semibold text-zinc-200 transition-colors"
-                    >
-                      <span>Selanjutnya</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Compact Quick Jump for Reading questions */}
-              <div className="p-3 rounded-2xl bg-[#10141e] border border-[#1e2638] flex items-center justify-between gap-2 overflow-x-auto">
-                <span className="text-xs text-zinc-400 font-medium shrink-0 pl-1">Navigasi Soal:</span>
-                <div className="flex items-center gap-1.5">
-                  {questions.map((q, idx) => {
-                    const isAns = !!userAnswers[q.id];
-                    const isFlag = !!flagged[q.id];
-                    const isCurr = idx === currentIndex;
-
-                    let bg = 'bg-[#151b28] text-zinc-400 border-[#1e2638]';
-                    if (isFlag) {
-                      bg = 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-bold';
-                    } else if (isAns) {
-                      bg = 'bg-indigo-600 text-white border-indigo-600 font-bold shadow-sm';
-                    }
-
-                    return (
-                      <button
-                        key={q.id}
-                        type="button"
-                        onClick={() => onNavigateIndex(idx)}
-                        className={`w-7 h-7 rounded-lg border text-xs flex items-center justify-center transition-colors shrink-0 ${bg} ${
-                          isCurr ? 'ring-2 ring-white ring-offset-2 ring-offset-[#10141e]' : ''
-                        }`}
-                      >
-                        {idx + 1}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          /* Standard 8 cols + 4 cols layout (Listening & Structure) */
-          <>
-            <div className="lg:col-span-8 flex flex-col gap-4">
-              <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-5 sm:p-8 shadow-sm flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between border-b border-[#1e2638] pb-4 mb-5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs px-2.5 py-1 rounded-lg bg-[#151b28] border border-[#1e2638] text-zinc-400 font-medium font-mono">
-                        {currentQ.part}
-                      </span>
-                      <span className="text-sm font-bold text-zinc-200 ml-1">
-                        Soal Nomor {currentIndex + 1}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={onToggleFlag}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
-                        flagged[currentQ.id]
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                          : 'bg-[#151b28] border border-[#1e2638] text-zinc-400 hover:text-zinc-200'
-                      }`}
-                      aria-label="Tandai ragu-ragu"
-                    >
-                      <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current' : ''}`} />
-                      <span>{flagged[currentQ.id] ? 'Ragu-ragu' : 'Tandai Ragu'}</span>
-                    </button>
-                  </div>
-
-                  {/* Listening Audio Player */}
-                  {currentQ.section === 'listening' && (
-                    <div className="mb-6">
-                      <AudioPlayer speakerText={currentQ.speakerText} audioUrl={currentQ.audioUrl} />
-
-                      {currentQ.speakerText && mode === 'practice' && (
-                        <div className="mt-2.5 text-right">
-                          <button
-                            type="button"
-                            onClick={() => setShowTranscript(!showTranscript)}
-                            className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors inline-flex items-center gap-1.5"
-                          >
-                            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                            <span>{showTranscript ? 'Sembunyikan Naskah Percakapan' : 'Lihat Naskah Percakapan'}</span>
-                          </button>
-
-                          {showTranscript && (
-                            <div className="mt-2.5 p-4 rounded-xl bg-[#151b28] border border-[#1e2638] text-left text-xs text-zinc-300 space-y-1.5 font-mono shadow-inner">
-                              {currentQ.speakerText.map((line, i) => (
-                                <p key={i} className="leading-relaxed">{line}</p>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Question Prompt */}
-                  <div className="text-base sm:text-lg font-medium text-zinc-100 mb-6 leading-relaxed">
-                    {renderInteractivePrompt(currentQ.prompt)}
-                  </div>
-
-                  {/* Options */}
-                  <div className="space-y-3">
-                    {(['A', 'B', 'C', 'D'] as const).map(key => {
-                      const optText = currentQ.options[key];
-                      if (!optText || optText === '-') return null;
-
-                      const isSelected = userAnswers[currentQ.id] === key;
-                      const borderClass = isSelected
-                        ? 'border-indigo-500/80 bg-indigo-500/10 text-zinc-100 shadow-sm'
-                        : 'border-[#1e2638] hover:border-[#2a344d] bg-[#121622] hover:bg-[#151b28] text-zinc-300';
-
-                      return (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => onSelectOption(key)}
-                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 ${borderClass}`}
-                        >
-                          <div className="flex items-start gap-3.5">
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-indigo-600 text-white shadow-sm'
-                                  : 'bg-[#151b28] text-zinc-400 border border-[#1e2638]'
-                              }`}
-                            >
-                              {key}
-                            </div>
-                            <div className="text-sm font-normal pt-0.5 leading-normal">
-                              {optText}
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-mono text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-[#10141e] border border-[#1e2638] shrink-0 mt-0.5">
-                            Key: {key}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Immediate Explanation in Practice Mode */}
-                  {mode === 'practice' && userAnswers[currentQ.id] && (
-                    <div className="mt-6 p-4 rounded-xl bg-[#151b28] border border-[#1e2638] text-xs space-y-2">
-                      <div className="font-bold text-zinc-200 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
-                        <span>Pembahasan Latihan:</span>
+                    {currentQ.passage.split('\n\n').map((paragraph, pIdx) => (
+                      <div key={pIdx} className="relative pl-8">
+                        <span className="absolute left-0 top-0.5 text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-[#151B28] dark:text-zinc-400 font-bold select-none border border-slate-200 dark:border-[#1E2638]">
+                          P{pIdx + 1}
+                        </span>
+                        <p className="leading-relaxed">{paragraph}</p>
                       </div>
-                      {currentQ.ruleCategory && (
-                        <div className="text-[11px] font-mono text-indigo-400">
-                          Kategori: {currentQ.ruleCategory}
-                        </div>
-                      )}
-                      <p className="text-zinc-300 leading-relaxed">
-                        {currentQ.explanation}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Navigation */}
-                <div className="flex items-center justify-between border-t border-[#1e2638] pt-5 mt-6">
-                  <button
-                    type="button"
-                    disabled={currentIndex === 0}
-                    onClick={() => onNavigateIndex(currentIndex - 1)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151b28] border border-[#1e2638] hover:bg-[#1a2233] disabled:opacity-40 disabled:hover:bg-[#151b28] text-xs font-semibold text-zinc-200 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    <span>Sebelumnya</span>
-                  </button>
-
-                  {mode === 'exam' && currentIndex === questions.length - 1 ? (
-                    <button
-                      type="button"
-                      onClick={onNextStepClick}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-colors"
-                    >
-                      <span>{examStep === 3 ? 'Kumpulkan Pre-Test' : `Selesai Section ${examStep}`}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={currentIndex === questions.length - 1}
-                      onClick={() => onNavigateIndex(currentIndex + 1)}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151b28] border border-[#1e2638] hover:bg-[#1a2233] disabled:opacity-40 disabled:hover:bg-[#151b28] text-xs font-semibold text-zinc-200 transition-colors"
-                    >
-                      <span>Selanjutnya</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Question Grid Map (4 cols) */}
-            <div className="lg:col-span-4 flex flex-col gap-4">
-              <div className="bg-[#10141e] border border-[#1e2638] rounded-2xl p-5 shadow-sm sticky top-32">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-indigo-400" />
-                    <span>Peta Soal {mode === 'exam' ? `Section ${examStep}` : ''}</span>
-                  </h3>
-                  <span className="text-xs text-zinc-400 font-mono">
-                    <strong className="text-emerald-400">{answeredInCurrentSection}</strong>/{questions.length}
-                  </span>
-                </div>
-
-                {/* Pagination tabs if more than 50 questions */}
-                {totalMapPages > 1 && (
-                  <div className="flex items-center gap-1 overflow-x-auto pb-2 mb-2 text-[11px]">
-                    {Array.from({ length: totalMapPages }).map((_, pIdx) => (
-                      <button
-                        key={pIdx}
-                        type="button"
-                        onClick={() => setMapPage(pIdx)}
-                        className={`px-2 py-1 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors ${
-                          mapPage === pIdx
-                            ? 'bg-indigo-600 text-white border-indigo-600'
-                            : 'bg-[#151b28] text-zinc-400 border-[#1e2638] hover:bg-[#1a2233]'
-                        }`}
-                      >
-                        {pIdx * mapChunkSize + 1}-{Math.min((pIdx + 1) * mapChunkSize, questions.length)}
-                      </button>
                     ))}
                   </div>
-                )}
+                </div>
+              </div>
 
-                {/* Legend */}
-                <div className="flex items-center gap-3 text-[11px] text-zinc-400 mb-3 pb-2.5 border-b border-[#1e2638]">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" /> Terjawab
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Ragu
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#1e2638] inline-block" /> Kosong
-                  </span>
+              {/* Right Column: Question Stem & Options */}
+              <div
+                className={`lg:col-span-5 flex flex-col gap-4 ${
+                  mobileReadingTab === 'passage' ? 'hidden lg:flex' : 'flex'
+                }`}
+              >
+                <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-xl p-6 sm:p-7 shadow-xs flex flex-col justify-between min-h-[500px]">
+                  <div>
+                    {/* Item Topbar */}
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-3.5 mb-5">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                        Pertanyaan {currentIndex + 1} dari {questions.length}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={onToggleFlag}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                          flagged[currentQ.id]
+                            ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
+                            : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
+                        }`}
+                        aria-label="Tandai untuk ditinjau"
+                      >
+                        <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600 dark:text-amber-400' : ''}`} />
+                        <span>{flagged[currentQ.id] ? 'Ditandai' : 'Tandai Ragu'}</span>
+                      </button>
+                    </div>
+
+                    {/* Question Prompt */}
+                    <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-zinc-100 mb-6 leading-relaxed">
+                      {currentQ.prompt}
+                    </div>
+
+                    {/* Multiple-Choice Options */}
+                    <div className="space-y-3">
+                      {(['A', 'B', 'C', 'D'] as const).map((key) => {
+                        const optText = currentQ.options[key];
+                        if (!optText || optText === '-') return null;
+
+                        const isSelected = userAnswers[currentQ.id] === key;
+                        const borderClass = isSelected
+                          ? 'border-blue-600 bg-blue-50/70 text-slate-900 ring-1 ring-blue-600 dark:border-blue-500 dark:bg-blue-500/15 dark:text-zinc-100 dark:ring-blue-500'
+                          : 'border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 dark:border-[#1E2638] dark:bg-[#121622] dark:hover:bg-[#151B28] dark:text-zinc-300';
+
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => onSelectOption(key)}
+                            className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 cursor-pointer shadow-xs ${borderClass}`}
+                          >
+                            <div className="flex items-start gap-3.5">
+                              <div
+                                className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
+                                  isSelected
+                                    ? 'bg-blue-600 text-white shadow-xs'
+                                    : 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-[#151B28] dark:text-zinc-400 dark:border-[#1E2638]'
+                                }`}
+                              >
+                                {key}
+                              </div>
+                              <div className="text-sm font-normal pt-0.5 leading-normal">
+                                {optText}
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
+                              {key}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Practice Mode Explanation */}
+                    {mode === 'practice' && userAnswers[currentQ.id] && (
+                      <div className="mt-5 p-4 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-xs space-y-1.5">
+                        <div className="font-bold text-slate-800 dark:text-zinc-200 flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-amber-500" />
+                          <span>Pembahasan Latihan:</span>
+                        </div>
+                        <p className="text-slate-600 dark:text-zinc-300 leading-relaxed">
+                          {currentQ.explanation}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Grid palette */}
-                <div className="grid grid-cols-5 gap-2 max-h-72 overflow-y-auto pr-1 smooth-scroll">
-                  {currentChunkQuestions.map((q, localIdx) => {
-                    const globalIdx = mapPage * mapChunkSize + localIdx;
-                    const isAns = !!userAnswers[q.id];
-                    const isFlag = !!flagged[q.id];
-                    const isCurr = globalIdx === currentIndex;
+                {/* Compact Question Jump Strip (IELTS Style) */}
+                <div className="p-3 rounded-xl bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] flex items-center justify-between gap-2 overflow-x-auto shadow-xs">
+                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium shrink-0 pl-1">
+                    Lompat:
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {questions.map((q, idx) => {
+                      const isAns = !!userAnswers[q.id];
+                      const isFlag = !!flagged[q.id];
+                      const isCurr = idx === currentIndex;
 
-                    let bg = 'bg-[#151b28] hover:bg-[#1a2233] text-zinc-400 border-[#1e2638]';
-                    if (isFlag) {
-                      bg = 'bg-amber-500/15 text-amber-300 border-amber-500/30 font-bold';
-                    } else if (isAns) {
-                      bg = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 font-bold';
-                    }
+                      let bg = 'bg-slate-50 text-slate-600 border-slate-200 dark:bg-[#151B28] dark:text-zinc-400 dark:border-[#1E2638]';
+                      if (isFlag) {
+                        bg = 'bg-amber-100 text-amber-900 border-amber-300 font-bold dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40';
+                      } else if (isAns) {
+                        bg = 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs';
+                      }
+
+                      return (
+                        <button
+                          key={q.id}
+                          type="button"
+                          onClick={() => onNavigateIndex(idx)}
+                          className={`w-7 h-7 rounded-md border text-xs flex items-center justify-center transition-colors shrink-0 cursor-pointer ${bg} ${
+                            isCurr ? 'ring-2 ring-slate-900 dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-[#10141E]' : ''
+                          }`}
+                        >
+                          {idx + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* CASE 2: STRUCTURE & LISTENING (College Board Bluebook Examination Layout) */
+          <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
+            <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-6 sm:p-9 shadow-xs flex flex-col justify-between min-h-[500px]">
+              <div>
+                {/* Bluebook Section & Item Tag Header */}
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-6">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-slate-100 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-slate-700 dark:text-zinc-300">
+                      {currentQ.part}
+                    </span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-zinc-100">
+                      Nomor {currentIndex + 1}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={onToggleFlag}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                      flagged[currentQ.id]
+                        ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
+                        : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
+                    }`}
+                    aria-label="Tandai untuk ditinjau"
+                  >
+                    <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600 dark:text-amber-400' : ''}`} />
+                    <span>{flagged[currentQ.id] ? 'Ditandai untuk Ditinjau' : 'Tandai Ragu'}</span>
+                  </button>
+                </div>
+
+                {/* Listening Audio Track Player (Minimalist CBT Player) */}
+                {currentQ.section === 'listening' && (
+                  <div className="mb-6">
+                    <AudioPlayer
+                      speakerText={currentQ.speakerText}
+                      audioUrl={currentQ.audioUrl}
+                      isPracticeMode={mode === 'practice'}
+                    />
+
+                    {/* Transcript in Practice Mode Only */}
+                    {currentQ.speakerText && mode === 'practice' && (
+                      <div className="mt-2.5 text-right">
+                        <button
+                          type="button"
+                          onClick={() => setShowTranscript(!showTranscript)}
+                          className="text-xs text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors inline-flex items-center gap-1.5 font-medium cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                          <span>{showTranscript ? 'Sembunyikan Naskah Percakapan' : 'Lihat Naskah Percakapan'}</span>
+                        </button>
+
+                        {showTranscript && (
+                          <div className="mt-2.5 p-4 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-left text-xs text-slate-700 dark:text-zinc-300 space-y-1.5 font-mono shadow-xs">
+                            {currentQ.speakerText.map((line, i) => (
+                              <p key={i} className="leading-relaxed">{line}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Question Stem Prompt (18px crisp typography) */}
+                <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-zinc-100 mb-6 leading-relaxed">
+                  {renderInteractivePrompt(currentQ.prompt)}
+                </div>
+
+                {/* 4 Bluebook Multiple-Choice Options */}
+                <div className="space-y-3">
+                  {(['A', 'B', 'C', 'D'] as const).map((key) => {
+                    const optText = currentQ.options[key];
+                    if (!optText || optText === '-') return null;
+
+                    const isSelected = userAnswers[currentQ.id] === key;
+                    const borderClass = isSelected
+                      ? 'border-blue-600 bg-blue-50/70 text-slate-900 ring-1 ring-blue-600 dark:border-blue-500 dark:bg-blue-500/15 dark:text-zinc-100 dark:ring-blue-500'
+                      : 'border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 dark:border-[#1E2638] dark:bg-[#121622] dark:hover:bg-[#151B28] dark:text-zinc-300';
 
                     return (
                       <button
-                        key={q.id}
+                        key={key}
                         type="button"
-                        onClick={() => onNavigateIndex(globalIdx)}
-                        className={`h-9 rounded-xl border text-xs flex items-center justify-center transition-colors ${bg} ${
-                          isCurr ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-[#10141e] font-bold text-white' : ''
-                        }`}
+                        onClick={() => onSelectOption(key)}
+                        className={`w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3.5 cursor-pointer shadow-xs ${borderClass}`}
                       >
-                        {globalIdx + 1}
+                        <div className="flex items-start gap-3.5">
+                          <div
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
+                              isSelected
+                                ? 'bg-blue-600 text-white shadow-xs'
+                                : 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-[#151B28] dark:text-zinc-400 dark:border-[#1E2638]'
+                            }`}
+                          >
+                            {key}
+                          </div>
+                          <div className="text-sm font-normal pt-0.5 leading-normal">
+                            {optText}
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500 uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] shrink-0 mt-0.5">
+                          {key}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
 
-                {mode === 'exam' && (
-                  <div className="mt-4 pt-3 border-t border-[#1e2638]">
-                    <button
-                      type="button"
-                      onClick={onNextStepClick}
-                      className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm flex items-center justify-center gap-2"
-                    >
-                      <span>{examStep === 3 ? 'Kumpulkan Pre-Test' : `Selesai Section ${examStep}`}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                {/* Practice Mode Explanation */}
+                {mode === 'practice' && userAnswers[currentQ.id] && (
+                  <div className="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-xs space-y-2">
+                    <div className="font-bold text-slate-800 dark:text-zinc-200 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span>Pembahasan Latihan:</span>
+                    </div>
+                    {currentQ.ruleCategory && (
+                      <div className="text-[11px] font-mono text-blue-600 dark:text-blue-400">
+                        Formula: {currentQ.ruleCategory}
+                      </div>
+                    )}
+                    <p className="text-slate-600 dark:text-zinc-300 leading-relaxed">
+                      {currentQ.explanation}
+                    </p>
                   </div>
                 )}
               </div>
             </div>
-          </>
+          </div>
         )}
       </main>
+
+      {/* =========================================================================
+          CBT BOTTOM NAVIGATION BAR (Bluebook / IDP Standard Bottom Control)
+          ========================================================================= */}
+      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4 shadow-sm">
+        <button
+          type="button"
+          disabled={currentIndex === 0}
+          onClick={() => onNavigateIndex(currentIndex - 1)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] disabled:opacity-40 disabled:hover:bg-white text-xs font-semibold transition-all shadow-xs cursor-pointer"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Sebelumnya</span>
+        </button>
+
+        {/* Center: Question Review Palette & Flag Status */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onToggleFlag}
+            className={`hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              flagged[currentQ.id]
+                ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#151B28] dark:text-zinc-300'
+            }`}
+          >
+            <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600' : ''}`} />
+            <span>{flagged[currentQ.id] ? 'Ditandai Ragu' : 'Tandai Ragu (F)'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowPaletteDrawer(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
+          >
+            <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Semua Soal ({answeredCount}/{questions.length})</span>
+          </button>
+        </div>
+
+        {/* Right Action: Next or Finish Section */}
+        {mode === 'exam' && currentIndex === questions.length - 1 ? (
+          <button
+            type="button"
+            onClick={onNextStepClick}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer"
+          >
+            <span>{examStep === 3 ? 'Kumpulkan Pre-Test' : `Selesai Section ${examStep}`}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={currentIndex === questions.length - 1}
+            onClick={() => onNavigateIndex(currentIndex + 1)}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer"
+          >
+            <span>Selanjutnya</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
+      </footer>
+
+      {/* =========================================================================
+          QUESTION PALETTE DRAWER (CBT Practice & Bluebook Matrix Navigator)
+          ========================================================================= */}
+      {showPaletteDrawer && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative text-slate-900 dark:text-zinc-100 flex flex-col max-h-[90vh]">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1E2638] pb-4 mb-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <span>Peta Navigasi & Review Soal Section {examStep}</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                  Klik nomor soal untuk langsung berpindah ke pertanyaan tersebut.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPaletteDrawer(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-zinc-100 dark:hover:bg-[#151B28] transition-colors cursor-pointer"
+                aria-label="Tutup navigator"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Semantic Status Legend */}
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-zinc-400 mb-4 pb-3 border-b border-slate-200 dark:border-[#1E2638]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded bg-blue-600 inline-flex items-center justify-center text-[9px] text-white font-bold">✓</span>
+                <span>Terjawab ({answeredCount})</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded bg-amber-100 border border-amber-300 dark:bg-amber-500/20 dark:border-amber-500/40 inline-flex items-center justify-center text-amber-700 dark:text-amber-300 text-[10px]">
+                  <Flag className="w-2.5 h-2.5 fill-current" />
+                </span>
+                <span>Ditandai Ragu ({flaggedCount})</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3.5 h-3.5 rounded bg-white dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] inline-block" />
+                <span>Belum Diisi ({questions.length - answeredCount})</span>
+              </span>
+            </div>
+
+            {/* Matrix Grid (50 Numbered Tiles) */}
+            <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 overflow-y-auto pr-1 smooth-scroll max-h-[360px] p-1">
+              {questions.map((q, idx) => {
+                const isAns = !!userAnswers[q.id];
+                const isFlag = !!flagged[q.id];
+                const isCurr = idx === currentIndex;
+
+                let tileStyle =
+                  'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 dark:bg-[#151B28] dark:text-zinc-300 dark:border-[#1E2638]';
+
+                if (isFlag && isAns) {
+                  tileStyle =
+                    'bg-blue-600 text-white border-blue-600 font-bold ring-2 ring-amber-400';
+                } else if (isFlag) {
+                  tileStyle =
+                    'bg-amber-100 text-amber-900 border-amber-300 font-bold dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40';
+                } else if (isAns) {
+                  tileStyle =
+                    'bg-blue-600 text-white border-blue-600 font-bold shadow-xs';
+                }
+
+                return (
+                  <button
+                    key={q.id}
+                    type="button"
+                    onClick={() => {
+                      onNavigateIndex(idx);
+                      setShowPaletteDrawer(false);
+                    }}
+                    className={`h-10 rounded-lg border text-xs flex items-center justify-center relative transition-all cursor-pointer ${tileStyle} ${
+                      isCurr ? 'ring-2 ring-slate-900 dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-[#10141E]' : ''
+                    }`}
+                  >
+                    <span>{idx + 1}</span>
+                    {isFlag && (
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-500 border border-white dark:border-[#10141E]" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Footer Summary & Action */}
+            <div className="mt-5 pt-4 border-t border-slate-200 dark:border-[#1E2638] flex items-center justify-between">
+              <span className="text-xs text-slate-500 dark:text-zinc-400">
+                {questions.length - answeredCount === 0
+                  ? 'Semua nomor telah terisi!'
+                  : `Masih ada ${questions.length - answeredCount} butir kosong.`}
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowPaletteDrawer(false)}
+                className="px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+              >
+                Kembali ke Soal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
