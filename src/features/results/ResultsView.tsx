@@ -130,11 +130,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="grid grid-cols-2 sm:flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
             <span>Cetak PDF</span>
@@ -142,7 +142,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           <button
             type="button"
             onClick={onReturnToLobby}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 transition-colors shadow-xs cursor-pointer"
           >
             <Home className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
             <span>Dashboard</span>
@@ -181,23 +181,29 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           </div>
 
           {/* Quick Metrics Pillar */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-[95px] print:bg-slate-50 print:border-slate-300">
-              <div className="text-[11px] text-slate-500 dark:text-zinc-400">Total Benar</div>
-              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">{score.totalRaw}</div>
-              <div className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">dari {score.totalQuestions} soal</div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full md:w-auto">
+            <div className="p-2.5 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-0 sm:min-w-[95px] print:bg-slate-50 print:border-slate-300">
+              <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-zinc-400">
+                <span className="hidden sm:inline">Total Benar</span>
+                <span className="sm:hidden">Benar</span>
+              </div>
+              <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">{score.totalRaw}</div>
+              <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">dari {score.totalQuestions}</div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-[95px] print:bg-slate-50 print:border-slate-300">
-              <div className="text-[11px] text-slate-500 dark:text-zinc-400">Salah / Kosong</div>
-              <div className="text-2xl font-bold text-red-600 dark:text-rose-400 font-mono mt-0.5">{incorrectCount}</div>
-              <div className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">butir soal</div>
+            <div className="p-2.5 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-0 sm:min-w-[95px] print:bg-slate-50 print:border-slate-300">
+              <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-zinc-400">
+                <span className="hidden sm:inline">Salah / Kosong</span>
+                <span className="sm:hidden">Salah</span>
+              </div>
+              <div className="text-xl sm:text-2xl font-bold text-red-600 dark:text-rose-400 font-mono mt-0.5">{incorrectCount}</div>
+              <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">butir soal</div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-[95px] print:bg-slate-50 print:border-slate-300">
-              <div className="text-[11px] text-slate-500 dark:text-zinc-400">Akurasi</div>
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono mt-0.5">{score.accuracyPercentage}%</div>
-              <div className="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">keseluruhan</div>
+            <div className="p-2.5 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-center min-w-0 sm:min-w-[95px] print:bg-slate-50 print:border-slate-300">
+              <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-zinc-400">Akurasi</div>
+              <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono mt-0.5">{score.accuracyPercentage}%</div>
+              <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5">keseluruhan</div>
             </div>
           </div>
         </div>

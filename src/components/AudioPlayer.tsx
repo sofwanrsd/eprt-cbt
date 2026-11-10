@@ -201,7 +201,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       : null;
 
   return (
-    <div className="bg-slate-50 border border-slate-200 dark:bg-[#10141e] dark:border-[#1e2638] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+    <div className="bg-slate-50 border border-slate-200 dark:bg-[#10141e] dark:border-[#1e2638] rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm">
       {audioUrl && !useSpeechFallback && (
         <audio
           ref={audioRef}
@@ -241,25 +241,25 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start sm:justify-end">
+      <div className="grid grid-cols-[1fr_auto_auto] sm:flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
         <button
           type="button"
           onClick={togglePlay}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
+          className={`w-full sm:w-auto justify-center flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-lg text-xs font-semibold transition-all min-w-0 whitespace-nowrap ${
             isPlaying
               ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
               : 'bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-200'
           }`}
           aria-label={isPlaying ? 'Pause Audio' : 'Play Audio'}
         >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+          {isPlaying ? <Pause className="w-3.5 h-3.5 shrink-0" /> : <Play className="w-3.5 h-3.5 fill-current shrink-0" />}
           <span>{isPlaying ? 'Pause' : 'Play Audio'}</span>
         </button>
 
         <button
           type="button"
           onClick={restartAudio}
-          className="p-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-400 transition-colors"
+          className="p-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-400 transition-colors shrink-0"
           title="Restart Audio"
           aria-label="Restart audio from beginning"
         >
@@ -270,12 +270,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <select
             value={speechRate}
             onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-            className="bg-white border border-slate-200 dark:bg-[#151b28] dark:border-[#1e2638] text-xs rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-zinc-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="bg-white border border-slate-200 dark:bg-[#151b28] dark:border-[#1e2638] text-xs rounded-lg px-1.5 sm:px-2.5 py-2 text-slate-700 dark:text-zinc-300 focus:outline-none focus:border-blue-500 cursor-pointer shrink-0"
             title="Playback Speed"
             aria-label="Select playback speed"
           >
             <option value="0.85">0.85x</option>
-            <option value="0.95">1.0x (Normal)</option>
+            <option value="0.95">1.0x</option>
             <option value="1.1">1.15x</option>
           </select>
         )}

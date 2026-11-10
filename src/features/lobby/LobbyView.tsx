@@ -301,12 +301,12 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           ========================================================================= */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Mobile Navigation Bar Pills */}
-        <div className="lg:hidden flex items-center gap-1.5 p-2.5 sm:p-3 border-b border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#0C1018] overflow-x-auto text-xs shrink-0 max-w-full">
+        <div className="lg:hidden grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-2.5 sm:p-3 border-b border-slate-200 dark:border-[#1E2638] bg-white dark:bg-[#0C1018] text-xs shrink-0 max-w-full">
           <button
             type="button"
             onClick={() => setActiveTab('overview')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
-              activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
+            className={`px-3 py-2 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer text-center ${
+              activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 bg-slate-50 dark:bg-[#151B28] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             Dashboard
@@ -314,8 +314,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('modules')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
-              activeTab === 'modules' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
+            className={`px-3 py-2 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer text-center ${
+              activeTab === 'modules' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 bg-slate-50 dark:bg-[#151B28] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             Modul Drill
@@ -323,8 +323,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('analytics')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
-              activeTab === 'analytics' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
+            className={`px-3 py-2 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer text-center ${
+              activeTab === 'analytics' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 bg-slate-50 dark:bg-[#151B28] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             Analitik Topik
@@ -332,8 +332,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('history')}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
-              activeTab === 'history' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200'
+            className={`px-3 py-2 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer text-center ${
+              activeTab === 'history' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:text-slate-900 bg-slate-50 dark:bg-[#151B28] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             Riwayat ({history.length})
@@ -361,21 +361,21 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onClick={() => {
                     sessionStore.clearSession();
                     onRefreshHistory();
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-xs text-slate-600 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-400 transition-colors cursor-pointer shadow-xs"
+                  className="justify-center flex items-center px-3 py-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-400 transition-colors cursor-pointer shadow-xs"
                 >
                   Hapus
                 </button>
                 <button
                   type="button"
                   onClick={() => onResumeSession(activeSavedSession)}
-                  className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="justify-center px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <span>Lanjutkan</span>
                   <ArrowRight className="w-3.5 h-3.5" />

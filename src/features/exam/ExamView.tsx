@@ -168,7 +168,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT SUB-HEADER (IELTS / Bluebook Examination Status Bar)
           ========================================================================= */}
-      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between sticky top-14 sm:top-16 z-20 shadow-xs gap-2">
+      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 py-2 flex items-center justify-between sticky top-14 sm:top-16 z-20 shadow-xs gap-1.5 sm:gap-2">
         <div className="flex items-center gap-2 min-w-0 shrink-0">
           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 dark:bg-[#151B28] dark:text-blue-300 border border-slate-200 dark:border-[#1E2638] shrink-0">
             {mode === 'exam' ? `Sec ${examStep}` : 'Drill'}
@@ -194,7 +194,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={() => setShowPaletteDrawer(true)}
-            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-[11px] sm:text-xs font-semibold transition-colors shadow-xs cursor-pointer shrink-0"
             title="Buka Peta Soal & Review"
           >
             <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
@@ -206,7 +206,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={onOpenDirections}
-            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-xs font-semibold transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] text-[11px] sm:text-xs font-semibold transition-colors shadow-xs cursor-pointer shrink-0"
             title="Petunjuk Soal"
           >
             <HelpCircle className="w-3.5 h-3.5 text-amber-500" />
@@ -420,7 +420,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
             <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-4 sm:p-9 shadow-xs flex flex-col justify-between min-h-[500px]">
               <div>
                 {/* Bluebook Section & Item Tag Header */}
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-6">
+                <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-6">
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-slate-100 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-slate-700 dark:text-zinc-300 whitespace-nowrap">
                       {currentQ.part}
@@ -433,7 +433,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
                   <button
                     type="button"
                     onClick={onToggleFlag}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                       flagged[currentQ.id]
                         ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
                         : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -441,7 +441,8 @@ export const ExamView: React.FC<ExamViewProps> = ({
                     aria-label="Tandai untuk ditinjau"
                   >
                     <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600 dark:text-amber-400' : ''}`} />
-                    <span>{flagged[currentQ.id] ? 'Ditandai untuk Ditinjau' : 'Tandai Ragu'}</span>
+                    <span className="hidden sm:inline">{flagged[currentQ.id] ? 'Ditandai untuk Ditinjau' : 'Tandai Ragu'}</span>
+                    <span className="sm:hidden">{flagged[currentQ.id] ? 'Ditandai' : 'Tandai'}</span>
                   </button>
                 </div>
 
@@ -549,31 +550,31 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT BOTTOM NAVIGATION BAR (Bluebook / IDP Standard Bottom Control)
           ========================================================================= */}
-      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex flex-wrap items-center justify-between gap-1.5 sm:gap-4 shadow-sm">
+      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-2 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 grid grid-cols-4 sm:flex items-center justify-between gap-1.5 sm:gap-4 shadow-sm">
         <button
           type="button"
           disabled={currentIndex === 0}
           onClick={() => onNavigateIndex(currentIndex - 1)}
-          className="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] disabled:opacity-30 disabled:hover:bg-white text-xs font-semibold transition-all shadow-xs cursor-pointer shrink-0"
+          className="w-full sm:w-auto sm:min-w-[130px] justify-center flex items-center gap-1 sm:gap-2 px-1.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-300 dark:hover:bg-[#1A2233] disabled:opacity-30 disabled:hover:bg-white text-[11px] sm:text-xs font-semibold transition-all shadow-xs cursor-pointer shrink-0"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           <span className="hidden sm:inline">Sebelumnya</span>
           <span className="sm:hidden">Prev</span>
         </button>
 
         {/* Center: Question Review Palette & Flag Status */}
-        <div className="order-first w-full justify-center min-[480px]:order-none min-[480px]:w-auto flex items-center gap-1.5 sm:gap-3">
+        <div className="contents sm:flex items-center gap-1.5 sm:gap-3">
           <button
             type="button"
             onClick={onToggleFlag}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
+            className={`w-full sm:w-auto justify-center flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3.5 py-2 rounded-lg text-[11px] sm:text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
               flagged[currentQ.id]
                 ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#151B28] dark:text-zinc-300'
             }`}
             title="Tandai ragu-ragu"
           >
-            <Flag className={`w-3.5 h-3.5 ${flagged[currentQ.id] ? 'fill-current text-amber-600' : ''}`} />
+            <Flag className={`w-3.5 h-3.5 shrink-0 ${flagged[currentQ.id] ? 'fill-current text-amber-600' : ''}`} />
             <span className="hidden md:inline">{flagged[currentQ.id] ? 'Ditandai Ragu' : 'Tandai Ragu (F)'}</span>
             <span className="md:hidden">{flagged[currentQ.id] ? 'Ragu' : 'Tandai'}</span>
           </button>
@@ -581,9 +582,9 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={() => setShowPaletteDrawer(true)}
-            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer shrink-0"
+            className="w-full sm:w-auto justify-center flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:text-zinc-200 text-[11px] sm:text-xs font-semibold transition-colors cursor-pointer shrink-0"
           >
-            <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <Layers className="w-3.5 h-3.5 shrink-0 text-blue-600 dark:text-blue-400" />
             <span className="hidden sm:inline">Semua Soal</span>
             <span>({answeredCount}/{questions.length})</span>
           </button>
@@ -594,7 +595,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
           <button
             type="button"
             onClick={onNextStepClick}
-            className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0 ${
+            className={`w-full sm:w-auto sm:min-w-[130px] justify-center flex items-center gap-1 sm:gap-2 px-1.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-white text-[11px] sm:text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0 ${
               mode === 'practice' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
@@ -604,18 +605,18 @@ export const ExamView: React.FC<ExamViewProps> = ({
             <span className="sm:hidden">
               {mode === 'practice' ? 'Selesai' : examStep === 3 ? 'Kumpulkan' : 'Selesai'}
             </span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           </button>
         ) : (
           <button
             type="button"
             disabled={currentIndex === questions.length - 1}
             onClick={() => onNavigateIndex(currentIndex + 1)}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:hover:bg-blue-600 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0"
+            className="w-full sm:w-auto sm:min-w-[130px] justify-center flex items-center gap-1 sm:gap-2 px-1.5 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:hover:bg-blue-600 text-white text-[11px] sm:text-xs font-bold shadow-xs transition-all hover:scale-[1.01] cursor-pointer shrink-0"
           >
             <span className="hidden sm:inline">Selanjutnya</span>
             <span className="sm:hidden">Next</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           </button>
         )}
       </footer>
