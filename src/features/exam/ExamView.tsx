@@ -168,12 +168,12 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT SUB-HEADER (IELTS / Bluebook Examination Status Bar)
           ========================================================================= */}
-      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 py-2 flex items-center justify-between sticky top-14 sm:top-16 z-20 shadow-xs gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between sticky top-14 sm:top-16 z-20 shadow-xs gap-2">
+        <div className="flex items-center gap-2 min-w-0 shrink-0">
           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 dark:bg-[#151B28] dark:text-blue-300 border border-slate-200 dark:border-[#1E2638] shrink-0">
             {mode === 'exam' ? `Sec ${examStep}` : 'Drill'}
           </span>
-          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-zinc-100 truncate">
+          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-zinc-100">
             <span className="sm:hidden">
               {currentQ.section === 'listening' ? 'Listening' : currentQ.section === 'structure' ? 'Structure' : 'Reading'}
             </span>
@@ -267,7 +267,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
                     </div>
                     <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-zinc-500 font-mono">
                       <span className="hidden sm:inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-500/20 font-sans text-[10px] font-semibold">
-                        <Highlighter className="w-3 h-3 text-amber-600" /> Highlighter Aktif
+                        <Highlighter className="w-3 h-3 text-amber-600" /> Seleksi teks
                       </span>
                       <span>Independent Scroll</span>
                     </div>
@@ -295,10 +295,10 @@ export const ExamView: React.FC<ExamViewProps> = ({
                   mobileReadingTab === 'passage' ? 'hidden lg:flex' : 'flex'
                 }`}
               >
-                <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-xl p-6 sm:p-7 shadow-xs flex flex-col justify-between min-h-[500px]">
+                <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-xl p-4 sm:p-7 shadow-xs flex flex-col justify-between min-h-[500px]">
                   <div>
                     {/* Item Topbar */}
-                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-3.5 mb-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-[#1E2638] pb-3.5 mb-5">
                       <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                         Pertanyaan {currentIndex + 1} dari {questions.length}
                       </span>
@@ -417,15 +417,15 @@ export const ExamView: React.FC<ExamViewProps> = ({
         ) : (
           /* CASE 2: STRUCTURE & LISTENING (College Board Bluebook Examination Layout) */
           <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
-            <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-6 sm:p-9 shadow-xs flex flex-col justify-between min-h-[500px]">
+            <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-4 sm:p-9 shadow-xs flex flex-col justify-between min-h-[500px]">
               <div>
                 {/* Bluebook Section & Item Tag Header */}
-                <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-6">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-slate-100 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-slate-700 dark:text-zinc-300">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-6">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-slate-100 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-slate-700 dark:text-zinc-300 whitespace-nowrap">
                       {currentQ.part}
                     </span>
-                    <span className="text-sm font-bold text-slate-900 dark:text-zinc-100">
+                    <span className="text-sm font-bold text-slate-900 dark:text-zinc-100 whitespace-nowrap">
                       Nomor {currentIndex + 1}
                     </span>
                   </div>
@@ -433,7 +433,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
                   <button
                     type="button"
                     onClick={onToggleFlag}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 whitespace-nowrap ${
                       flagged[currentQ.id]
                         ? 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
                         : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -549,7 +549,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
       {/* =========================================================================
           CBT BOTTOM NAVIGATION BAR (Bluebook / IDP Standard Bottom Control)
           ========================================================================= */}
-      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-1.5 sm:gap-4 shadow-sm">
+      <footer className="sticky bottom-0 z-20 bg-white dark:bg-[#0C1018] border-t border-slate-200 dark:border-[#1E2638] px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex flex-wrap items-center justify-between gap-1.5 sm:gap-4 shadow-sm">
         <button
           type="button"
           disabled={currentIndex === 0}
@@ -562,7 +562,7 @@ export const ExamView: React.FC<ExamViewProps> = ({
         </button>
 
         {/* Center: Question Review Palette & Flag Status */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="order-first w-full justify-center min-[480px]:order-none min-[480px]:w-auto flex items-center gap-1.5 sm:gap-3">
           <button
             type="button"
             onClick={onToggleFlag}

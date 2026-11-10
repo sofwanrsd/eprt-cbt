@@ -394,7 +394,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
                 <div className="max-w-xl z-10">
                   <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-300 text-[11px] font-medium mb-2.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Simulator CBT Resmi EPrT Telkom University</span>
+                    <span>Simulasi Mandiri EPrT</span>
                   </div>
                   <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-snug">
                     Simulasi & Diagnostik <span className="text-blue-600 dark:text-blue-400">EPrT Tel-U</span>

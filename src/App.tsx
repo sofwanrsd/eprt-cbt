@@ -251,17 +251,15 @@ export default function App() {
 
   const handlePracticeIncorrect = useCallback(() => {
     const incorrectQs = OFFICIAL_SIMULATION_QUESTIONS.filter(
-      (q) => userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.correctAnswer
+      (q) => userAnswers[q.id] !== q.correctAnswer
     );
     if (incorrectQs.length === 0) return;
     setIncorrectBank(incorrectQs);
     setBankSource("incorrect");
     setCurrentIndex(0);
-    const freshAnswers = { ...userAnswers };
-    for (const q of incorrectQs) {
-      delete freshAnswers[q.id];
-    }
-    setUserAnswers(freshAnswers);
+    setUserAnswers({});
+    setFlagged({});
+    setScoreReport(null);
     setView("practice");
   }, [userAnswers]);
 
@@ -364,7 +362,7 @@ export default function App() {
       {/* =========================================================================
           APPLICATION HEADER
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0C1018]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs">
+      <header className="sticky top-0 z-40 bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs print:hidden">
         {/* Left: Brand Identity & Current Context */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
@@ -376,7 +374,7 @@ export default function App() {
           >
             EP
           </button>
-          <div className="min-w-0">
+          <div className={`min-w-0 ${view === "exam" ? "hidden sm:block" : ""}`}>
             <div className="text-xs sm:text-sm font-bold tracking-tight text-slate-900 dark:text-zinc-100 flex items-center gap-1.5 sm:gap-2">
               <span className="shrink-0">EPrT CBT</span>
               <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 font-semibold font-mono shrink-0">
@@ -386,7 +384,7 @@ export default function App() {
             <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-zinc-400 truncate hidden md:block">
               {isExamMode
                 ? `Tel-U CBT — ${getSectionTitle(currentQ?.section || "listening")}`
-                : "Official Telkom University Language Center Diagnostic Suite"}
+                : "Simulasi mandiri untuk persiapan EPrT"}
             </div>
           </div>
         </div>
@@ -452,6 +450,7 @@ export default function App() {
             <ExamTimer
               key={`timer-step-${examStep}`}
               initialSeconds={getCurrentSectionSeconds()}
+              deadline={sectionDeadlines[examStep] ?? undefined}
               isRunning={view === "exam"}
               onExpire={handleSectionTimeExpired}
             />
@@ -505,6 +504,7 @@ export default function App() {
             <button
               type="button"
               onClick={handleExitExamToLobby}
+              aria-label={view === "exam" ? "Simpan dan keluar" : "Kembali ke Dashboard"}
               className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-300 transition-colors cursor-pointer shadow-xs"
             >
               {isExamMode ? <LogOut className="w-3.5 h-3.5 text-amber-500" /> : <Home className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />}

@@ -20,8 +20,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const utteranceQueueRef = useRef<SpeechSynthesisUtterance[]>([]);
+  const fallbackTimerRef = useRef<number | null>(null);
+  const cancelledRef = useRef<boolean>(false);
 
   const stopAllAudio = useCallback(() => {
+    cancelledRef.current = true;
+    if (fallbackTimerRef.current !== null) {
+      window.clearInterval(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -49,14 +56,41 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       return;
     }
 
+    cancelledRef.current = true;
     window.speechSynthesis.cancel();
     utteranceQueueRef.current = [];
+    if (fallbackTimerRef.current !== null) {
+      window.clearInterval(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+    cancelledRef.current = false;
 
     if (!speakerText || speakerText.length === 0) {
       setErrorMessage('Naskah percakapan tidak tersedia untuk soal ini.');
       setIsPlaying(false);
       return;
     }
+
+    const startTimedDialogueFallback = () => {
+      if (fallbackTimerRef.current !== null) return;
+      let currentTurn = 0;
+      setActiveTurnIndex(0);
+      setIsPlaying(true);
+      const stepMs = Math.max(1200, Math.round(2200 / speechRate));
+      fallbackTimerRef.current = window.setInterval(() => {
+        currentTurn += 1;
+        if (currentTurn < speakerText.length) {
+          setActiveTurnIndex(currentTurn);
+        } else {
+          if (fallbackTimerRef.current !== null) {
+            window.clearInterval(fallbackTimerRef.current);
+            fallbackTimerRef.current = null;
+          }
+          setIsPlaying(false);
+          setActiveTurnIndex(null);
+        }
+      }, stepMs);
+    };
 
     const voices = window.speechSynthesis.getVoices();
     const usVoices = voices.filter(v => v.lang.startsWith('en'));
@@ -90,13 +124,16 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         setActiveTurnIndex(idx);
       };
 
-      utt.onerror = () => {
-        setIsPlaying(false);
-        setActiveTurnIndex(null);
+      utt.onerror = (event: any) => {
+        if (cancelledRef.current || event?.error === 'canceled' || event?.error === 'interrupted') {
+          return;
+        }
+        startTimedDialogueFallback();
       };
 
       if (idx === speakerText.length - 1) {
         utt.onend = () => {
+          if (fallbackTimerRef.current !== null) return;
           setIsPlaying(false);
           setActiveTurnIndex(null);
         };
@@ -107,6 +144,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
     utteranceQueueRef.current = utterances;
     setIsPlaying(true);
+    setActiveTurnIndex(0);
 
     utterances.forEach(u => window.speechSynthesis.speak(u));
   }, [speakerText, speechRate]);
@@ -177,7 +215,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
       <div className="flex items-center gap-3 w-full sm:w-auto">
         <div
-          className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
+          className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors shrink-0 ${
             isPlaying
               ? 'bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-500/15 dark:border-blue-500/30 dark:text-blue-400'
               : 'bg-white border-slate-200 text-slate-500 dark:bg-[#151b28] dark:border-[#1e2638] dark:text-zinc-400'
@@ -203,11 +241,11 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start sm:justify-end">
         <button
           type="button"
           onClick={togglePlay}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
             isPlaying
               ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
               : 'bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-[#151b28] dark:hover:bg-[#1a2233] dark:border-[#1e2638] dark:text-zinc-200'

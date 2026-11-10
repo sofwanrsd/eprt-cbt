@@ -42,7 +42,12 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
     window.print();
   };
 
-  const incorrectCount = score.totalQuestions - score.totalRaw;
+  const incorrectCount = useMemo(() => {
+    if (questions && userAnswers) {
+      return questions.filter((q) => userAnswers[q.id] !== q.correctAnswer).length;
+    }
+    return score.totalQuestions - score.totalRaw;
+  }, [questions, userAnswers, score.totalQuestions, score.totalRaw]);
 
   // Derive Part-by-Part and Skill Breakdown if questions and answers are available
   const subpartStats = useMemo(() => {
@@ -93,15 +98,18 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
 
   return (
     <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-8 flex flex-col justify-center print:p-0 print:bg-white print:max-w-none text-slate-900 dark:text-zinc-100">
-      {/* Official Institutional Print Header */}
+      {/* Independent Simulation Diagnostic Print Header */}
       <div className="hidden print:block mb-6 pb-4 border-b-2 border-slate-800">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-lg font-black tracking-tight text-slate-900 uppercase font-mono">
-              Telkom University — Language Center (LaC)
+              EPrT CBT Simulation — Independent Diagnostic Report
             </div>
             <div className="text-xs text-slate-600 font-medium">
-              English Proficiency Test (EPrT) — Official Diagnostic Evaluation Report
+              Simulasi Ujian Mandiri Diagnostik TOEFL ITP / EPrT
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 italic">
+              Hasil estimasi simulasi mandiri untuk evaluasi diagnostik (Bukan sertifikat atau laporan resmi institusi LaC Telkom University / ETS)
             </div>
           </div>
           <div className="text-right text-[10px] text-slate-500 font-mono">
@@ -112,7 +120,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
       </div>
 
       {/* Action Header (Excluded from Print) */}
-      <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 dark:border-[#1E2638] print:hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-200 dark:border-[#1E2638] print:hidden">
         <div>
           <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider block font-mono">
             Hasil Evaluasi CBT Selesai
@@ -122,7 +130,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           </h1>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={handlePrint}
@@ -383,11 +391,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
       </div>
 
       {/* Main CTAs (Excluded from Print) */}
-      <div className="flex flex-col sm:flex-row gap-3 print:hidden">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 print:hidden">
         <button
           type="button"
           onClick={onReview}
-          className="flex-1 py-3 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+          className="flex-1 min-w-[200px] py-3 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
         >
           <Eye className="w-4 h-4" />
           <span>Review Pembahasan Soal & Kunci</span>
@@ -397,7 +405,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           <button
             type="button"
             onClick={onPracticeIncorrect}
-            className="py-3 px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            className="flex-1 min-w-[200px] py-3 px-5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             title="Latih hanya soal yang salah"
           >
             <Sparkles className="w-4 h-4" />
@@ -408,7 +416,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         <button
           type="button"
           onClick={onRetry}
-          className="py-3 px-5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+          className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
         >
           <RotateCcw className="w-4 h-4 text-slate-400 dark:text-zinc-400" />
           <span>Ulangi Pre-Test Baru</span>
@@ -417,7 +425,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         <button
           type="button"
           onClick={onReturnToLobby}
-          className="py-3 px-5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+          className="flex-1 sm:flex-none py-3 px-5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:hover:bg-[#1A2233] dark:border-[#1E2638] dark:text-zinc-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
         >
           <Home className="w-4 h-4 text-slate-400 dark:text-zinc-400" />
           <span>Kembali ke Beranda</span>

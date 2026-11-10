@@ -1,34 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, Eye, EyeOff } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Clock } from 'lucide-react';
 
 interface ExamTimerProps {
   initialSeconds: number;
+  deadline?: number;
   isRunning: boolean;
   onExpire: () => void;
 }
 
-export const ExamTimer: React.FC<ExamTimerProps> = React.memo(({ initialSeconds, isRunning, onExpire }) => {
-  const [seconds, setSeconds] = useState(initialSeconds);
+export const ExamTimer: React.FC<ExamTimerProps> = React.memo(({ initialSeconds, deadline, isRunning, onExpire }) => {
+  const remaining = () => deadline === undefined
+    ? initialSeconds
+    : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  const [seconds, setSeconds] = useState(remaining);
   const [isTimerHidden, setIsTimerHidden] = useState(false);
+  const onExpireRef = useRef(onExpire);
+  onExpireRef.current = onExpire;
 
   useEffect(() => {
-    setSeconds(initialSeconds);
-  }, [initialSeconds]);
-
-  useEffect(() => {
+    const endsAt = deadline ?? Date.now() + initialSeconds * 1000;
+    let expired = false;
+    const update = () => {
+      const next = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+      setSeconds(next);
+      if (isRunning && next === 0 && !expired) {
+        expired = true;
+        onExpireRef.current();
+      }
+    };
+    update();
     if (!isRunning) return;
-    const interval = setInterval(() => {
-      setSeconds(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onExpire();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isRunning, onExpire]);
+    const interval = window.setInterval(update, 1000);
+    // Background tabs may throttle intervals. Reconcile immediately on return.
+    document.addEventListener('visibilitychange', update);
+    window.addEventListener('focus', update);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', update);
+      window.removeEventListener('focus', update);
+    };
+  }, [initialSeconds, deadline, isRunning]);
 
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;

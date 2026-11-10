@@ -64,17 +64,17 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
   return (
     <div className="flex-1 flex flex-col bg-[#F8FAFC] dark:bg-[#090C13] text-[#0F172A] dark:text-[#F8FAFC] min-h-[calc(100vh-64px)] justify-between">
       {/* Review Control Subheader */}
-      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-16 z-20 shadow-xs">
-        <div className="flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="text-slate-500 dark:text-zinc-400 font-semibold flex items-center gap-1.5 mr-2">
+      <div className="bg-white dark:bg-[#0C1018] border-b border-slate-200 dark:border-[#1E2638] px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 sticky top-16 z-20 shadow-xs">
+        <div className="w-full md:w-auto flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs min-w-0">
+          <span className="text-slate-500 dark:text-zinc-400 font-semibold flex items-center gap-1.5 mr-1 sm:mr-2 shrink-0">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
             <span>Filter:</span>
           </span>
           <button
             type="button"
-            onClick={() => { setFilterSection('all'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-              filterSection === 'all'
+            onClick={() => { setFilterSection('all'); setFilterMode('all'); setCurrentIndex(0); }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+              filterSection === 'all' && filterMode === 'all'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
@@ -83,8 +83,8 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => { setFilterSection('listening'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+            onClick={() => { setFilterSection(filterSection === 'listening' ? 'all' : 'listening'); setCurrentIndex(0); }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer ${
               filterSection === 'listening'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -94,8 +94,8 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => { setFilterSection('structure'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+            onClick={() => { setFilterSection(filterSection === 'structure' ? 'all' : 'structure'); setCurrentIndex(0); }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer ${
               filterSection === 'structure'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -105,8 +105,8 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => { setFilterSection('reading'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+            onClick={() => { setFilterSection(filterSection === 'reading' ? 'all' : 'reading'); setCurrentIndex(0); }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer ${
               filterSection === 'reading'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-100 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -117,7 +117,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           <button
             type="button"
             onClick={() => { setFilterMode(filterMode === 'incorrect' ? 'all' : 'incorrect'); setCurrentIndex(0); }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-colors border cursor-pointer ${
               filterMode === 'incorrect'
                 ? 'bg-red-50 text-red-700 border-red-300 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30'
                 : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -131,7 +131,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
             <button
               type="button"
               onClick={() => { setFilterMode(filterMode === 'flagged' ? 'all' : 'flagged'); setCurrentIndex(0); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-colors border cursor-pointer ${
                 filterMode === 'flagged'
                   ? 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30'
                   : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#151B28] dark:border-[#1E2638] dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -143,12 +143,12 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {incorrectCount > 0 && onPracticeIncorrect && (
             <button
               type="button"
               onClick={onPracticeIncorrect}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs shrink-0"
               title="Latih hanya soal yang belum benar"
             >
               <Sparkles className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           <button
             type="button"
             onClick={onRetry}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] dark:text-zinc-300 text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] dark:text-zinc-300 text-xs font-semibold transition-colors cursor-pointer shadow-xs shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-400" />
             <span>Ulangi Tes</span>
@@ -168,7 +168,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           <button
             type="button"
             onClick={onReturnToLobby}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-semibold text-white transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-semibold text-white transition-colors shadow-xs cursor-pointer shrink-0"
           >
             <Home className="w-3.5 h-3.5" />
             <span>Dashboard</span>
@@ -188,11 +188,11 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
           <>
             {/* Left Column: Question & Review Analysis */}
             <div className="lg:col-span-8 flex flex-col gap-4">
-              <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-6 sm:p-8 shadow-xs flex-1 flex flex-col justify-between">
+              <div className="bg-white dark:bg-[#10141E] border border-slate-200 dark:border-[#1E2638] rounded-2xl p-4 sm:p-8 shadow-xs flex-1 flex flex-col justify-between">
                 <div>
                   {/* Status Banner */}
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-5">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-[#1E2638] pb-4 mb-5">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#151B28] border border-slate-200 dark:border-[#1E2638] text-slate-700 dark:text-zinc-400 font-mono font-medium">
                         {currentQ.section.toUpperCase()} · {currentQ.part}
                       </span>
@@ -206,9 +206,13 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400 text-xs font-semibold">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Jawaban Anda Benar
                         </span>
-                      ) : (
+                      ) : userAnswers[currentQ.id] ? (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-800 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-400 text-xs font-semibold">
                           <XCircle className="w-3.5 h-3.5" /> Jawaban Anda Keliru
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-500/15 dark:border-amber-500/30 dark:text-amber-300 text-xs font-semibold">
+                          <XCircle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Belum Dijawab / Kosong
                         </span>
                       )}
                     </div>
@@ -316,18 +320,19 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
                 </div>
 
                 {/* Nav buttons */}
-                <div className="flex items-center justify-between border-t border-slate-100 dark:border-[#1E2638] pt-5 mt-6">
+                <div className="flex items-center justify-between gap-2 border-t border-slate-100 dark:border-[#1E2638] pt-5 mt-6">
                   <button
                     type="button"
                     disabled={currentIndex === 0}
                     onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] disabled:opacity-40 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-all shadow-xs cursor-pointer"
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] disabled:opacity-40 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-all shadow-xs cursor-pointer shrink-0"
                   >
                     <ChevronLeft className="w-4 h-4" />
-                    <span>Sebelumnya</span>
+                    <span className="hidden sm:inline">Sebelumnya</span>
+                    <span className="sm:hidden">Prev</span>
                   </button>
 
-                  <div className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
+                  <div className="text-xs text-slate-500 dark:text-zinc-400 font-mono shrink-0">
                     {currentIndex + 1} / {filteredQuestions.length}
                   </div>
 
@@ -335,9 +340,10 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
                     type="button"
                     disabled={currentIndex === filteredQuestions.length - 1}
                     onClick={() => setCurrentIndex((i) => Math.min(filteredQuestions.length - 1, i + 1))}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] disabled:opacity-40 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-all shadow-xs cursor-pointer"
+                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 dark:bg-[#151B28] dark:border-[#1E2638] dark:hover:bg-[#1A2233] disabled:opacity-40 text-xs font-semibold text-slate-700 dark:text-zinc-200 transition-all shadow-xs cursor-pointer shrink-0"
                   >
-                    <span>Selanjutnya</span>
+                    <span className="hidden sm:inline">Selanjutnya</span>
+                    <span className="sm:hidden">Next</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -384,7 +390,7 @@ export const ReviewView: React.FC<ReviewViewProps> = ({
                           isCurr ? 'ring-2 ring-slate-900 dark:ring-white ring-offset-2 ring-offset-white dark:ring-offset-[#10141E]' : ''
                         }`}
                       >
-                        {idx + 1}
+                        {q.questionNumber || idx + 1}
                       </button>
                     );
                   })}
